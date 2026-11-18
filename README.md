@@ -86,7 +86,6 @@ along with the flaws still in the example report, which I left in on purpose.
 | POC Report (reference format, Word) | [`docs/poc-document/Research Agents - POC Report.docx`](<multi-agent-research-assistant/docs/poc-document/Research Agents - POC Report.docx>) |
 | POC document (team template, screenshots, model documentation) | [`docs/poc-document/POC_Document.pdf`](multi-agent-research-assistant/docs/poc-document/POC_Document.pdf) |
 | Example report (real run, unedited) | [`outputs/example_report.md`](multi-agent-research-assistant/outputs/example_report.md) |
-| Original brief | [`docs/PROJECT_BRIEF.md`](multi-agent-research-assistant/docs/PROJECT_BRIEF.md) |
 | Architecture | [README, section 2](multi-agent-research-assistant/README.md#2-architecture) |
 | How hallucinations are contained | [README, section 3](multi-agent-research-assistant/README.md#3-how-hallucinations-are-contained) |
 | Tests (139 passed, offline) | [`docs/test_results.txt`](multi-agent-research-assistant/docs/test_results.txt) |

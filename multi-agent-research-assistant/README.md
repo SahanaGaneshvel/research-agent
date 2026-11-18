@@ -16,7 +16,6 @@ All LLM inference runs **locally through Ollama**: no paid APIs, no API keys req
 | **Architecture diagram** | [image](docs/poc-document/images/architecture.png) · editable [`architecture.svg`](docs/poc-document/architecture.svg) · detailed version [`architecture-detailed.svg`](docs/poc-document/architecture-detailed.svg) |
 | **Example report** (real run, unedited) | [`outputs/example_report.md`](outputs/example_report.md) |
 | **Full record of that run** (sources, findings, table, timings, every event) | [`outputs/example_run.json`](outputs/example_run.json) |
-| **Original brief** | [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.md) |
 | **Test results** (139 passed, fully offline) | [`docs/test_results.txt`](docs/test_results.txt) |
 | **Behind-the-scenes web page** | [`web/`](web/) (replays the real run as a live flow diagram) |
 | **Source code** | [github.com/SahanaGaneshvel/research-agent](https://github.com/SahanaGaneshvel/research-agent) |
@@ -296,7 +295,7 @@ multi-agent-research-assistant/
 ├── schemas/                   Pydantic models per agent
 ├── utils/                     citations.py (registry/audit), evidence.py (per-model evidence), helpers.py
 ├── tests/                     offline test suite
-├── docs/PROJECT_BRIEF.md      original brief
+├── docs/                      POC Report, technical document, diagrams, test results
 └── outputs/                   generated reports + JSON run records
 ```
 
