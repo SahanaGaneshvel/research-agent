@@ -1,163 +1,138 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" font-family="'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif">
-  <!-- Editable source of the architecture diagram (GenAI Protos brand colours). -->
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#2B2828"/>
-    </marker>
-    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#1F5BF0"/>
-    </marker>
-  </defs>
-
-  <rect width="1700" height="980" fill="#F7FAFF"/>
-
-  <!-- title -->
-  <text x="40" y="58" font-size="30" font-weight="700" fill="#2B2828">Multi-Agent AI Research Assistant: architecture</text>
-  <text x="40" y="90" font-size="17" fill="#605C5C">One fixed LangGraph pipeline. The local model does the language work; code calls the tools, owns the citations and checks every fact.</text>
-
-  <!-- ===================== retrieval tools ===================== -->
-  <text x="900" y="130" text-anchor="middle" font-size="13" font-weight="600" letter-spacing="2" fill="#605C5C">RETRIEVAL TOOLS (RUN BY CODE, NOT BY THE MODEL)</text>
-  <g font-size="16">
-    <rect x="368" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
-    <text x="468" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">Web search</text>
-    <text x="468" y="194" text-anchor="middle" font-size="13" fill="#605C5C">DuckDuckGo → Bing → Brave</text>
-
-    <rect x="584" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
-    <text x="684" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">Hugging Face Hub API</text>
-    <text x="684" y="194" text-anchor="middle" font-size="13" fill="#605C5C">model cards, licence, params</text>
-
-    <rect x="800" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
-    <text x="900" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">arXiv API</text>
-    <text x="900" y="194" text-anchor="middle" font-size="13" fill="#605C5C">paper abstracts</text>
-
-    <rect x="1016" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
-    <text x="1116" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">GitHub REST API</text>
-    <text x="1116" y="194" text-anchor="middle" font-size="13" fill="#605C5C">repos, README, licence</text>
-
-    <rect x="1232" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
-    <text x="1332" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">Page fetcher</text>
-    <text x="1332" y="194" text-anchor="middle" font-size="13" fill="#605C5C">Requests + BeautifulSoup</text>
-  </g>
-  <text x="40" y="168" font-size="13" fill="#605C5C">JSON file cache (24 h; empty</text>
-  <text x="40" y="186" font-size="13" fill="#605C5C">results never cached) ·</text>
-  <text x="40" y="204" font-size="13" fill="#605C5C">robots.txt respected</text>
-
-  <!-- ===================== interfaces ===================== -->
-  <rect x="40" y="300" width="260" height="360" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
-  <text x="60" y="328" font-size="13" font-weight="600" letter-spacing="2" fill="#1F5BF0">INTERFACES</text>
-  <rect x="60" y="346" width="220" height="62" rx="2" fill="#F8FAFC" stroke="#E2E8F0"/>
-  <text x="170" y="372" text-anchor="middle" font-size="16" font-weight="700" fill="#2B2828">User</text>
-  <text x="170" y="394" text-anchor="middle" font-size="13" fill="#605C5C">asks a research question</text>
-  <path d="M170 408 V 428" stroke="#2B2828" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <rect x="60" y="432" width="220" height="62" rx="2" fill="#F8FAFC" stroke="#E2E8F0"/>
-  <text x="170" y="458" text-anchor="middle" font-size="16" font-weight="700" fill="#2B2828">Streamlit app</text>
-  <text x="170" y="480" text-anchor="middle" font-size="13" fill="#605C5C">app.py · live agent cards</text>
-  <text x="170" y="516" text-anchor="middle" font-size="13" fill="#605C5C">or</text>
-  <rect x="60" y="528" width="220" height="112" rx="2" fill="#F8FAFC" stroke="#E2E8F0"/>
-  <text x="170" y="556" text-anchor="middle" font-size="16" font-weight="700" fill="#2B2828">Next.js web app</text>
-  <text x="170" y="578" text-anchor="middle" font-size="13" fill="#605C5C">flow diagram · live or replay</text>
-  <text x="170" y="604" text-anchor="middle" font-size="13" fill="#605C5C">FastAPI · Server-Sent Events</text>
-  <text x="170" y="626" text-anchor="middle" font-size="13" fill="#605C5C">(api/server.py)</text>
-
-  <!-- ===================== LangGraph workflow ===================== -->
-  <rect x="340" y="300" width="1120" height="360" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
-  <text x="360" y="328" font-size="13" font-weight="600" letter-spacing="2" fill="#1F5BF0">LANGGRAPH WORKFLOW</text>
-
-  <!-- tools feed the Research Agent -->
-  <g fill="none" stroke="#94A3B8" stroke-width="1.6">
-    <path d="M468 210 C468 290 670 270 670 346"/>
-    <path d="M684 210 C684 280 670 290 670 346"/>
-    <path d="M900 210 C900 290 670 270 670 346"/>
-    <path d="M1116 210 C1116 300 670 260 670 346"/>
-    <path d="M1332 210 C1332 310 670 250 670 346"/>
-  </g>
-  <path d="M663 336 L670 350 L677 336 Z" fill="#94A3B8"/>
-
-  <!-- interfaces → orchestrator -->
-  <path d="M300 480 H 322 V 402 H 366" fill="none" stroke="#2B2828" stroke-width="1.6" marker-end="url(#arrow)"/>
-
-
-  <!-- orchestrator (code) -->
-  <rect x="370" y="352" width="170" height="100" rx="2" fill="#FFFFFF" stroke="#2B2828" stroke-width="1.6"/>
-  <text x="455" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#2B2828">Orchestrator</text>
-  <text x="455" y="410" text-anchor="middle" font-size="13" fill="#605C5C">validates the topic</text>
-  <text x="455" y="430" text-anchor="middle" font-size="13" fill="#605C5C">checks Ollama + model</text>
-
-  <!-- agents (navy = uses the model) -->
-  <g>
-    <rect x="580" y="352" width="180" height="100" rx="2" fill="#0B1B29"/>
-    <text x="670" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Research Agent</text>
-    <text x="670" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">plans, retrieves, reads</text>
-    <text x="670" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">numbers sources S1…Sn</text>
-
-    <rect x="790" y="352" width="180" height="100" rx="2" fill="#0B1B29"/>
-    <text x="880" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Comparison Agent</text>
-    <text x="880" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">one table row per model</text>
-    <text x="880" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">licence category by code</text>
-
-    <rect x="1000" y="352" width="180" height="100" rx="2" fill="#0B1B29"/>
-    <text x="1090" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Evaluation Agent</text>
-    <text x="1090" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">verifies benchmark scores</text>
-    <text x="1090" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">memory estimates by code</text>
-
-    <rect x="1210" y="352" width="220" height="100" rx="2" fill="#0B1B29"/>
-    <text x="1320" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Report Agent</text>
-    <text x="1320" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">10-section Markdown report</text>
-    <text x="1320" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">references built by code</text>
-  </g>
-
-  <!-- main sequence -->
-  <g stroke="#2B2828" stroke-width="1.8" marker-end="url(#arrow)">
-    <path d="M540 402 H 576"/>
-    <path d="M760 402 H 786"/>
-    <path d="M970 402 H 996"/>
-    <path d="M1180 402 H 1206"/>
-  </g>
-
-  <!-- the only two branches -->
-  <path d="M455 452 V 470" stroke="#605C5C" stroke-width="1.4" stroke-dasharray="4 4"/>
-  <rect x="370" y="472" width="170" height="54" rx="2" fill="#FEF2F2" stroke="#FECACA"/>
-  <text x="455" y="494" text-anchor="middle" font-size="13" font-weight="600" fill="#B91C1C">can’t start → stop</text>
-  <text x="455" y="514" text-anchor="middle" font-size="13" fill="#605C5C">with a clear message</text>
-  <path d="M670 452 V 470" stroke="#605C5C" stroke-width="1.4" stroke-dasharray="4 4"/>
-  <rect x="580" y="472" width="180" height="54" rx="2" fill="#FEF2F2" stroke="#FECACA"/>
-  <text x="670" y="494" text-anchor="middle" font-size="13" font-weight="600" fill="#B91C1C">0 sources → honest</text>
-  <text x="670" y="514" text-anchor="middle" font-size="13" fill="#605C5C">report, makes no claims</text>
-
-  <!-- shared state -->
-  <g stroke="#1F5BF0" stroke-width="1.4" stroke-dasharray="3 4">
-    <path d="M455 526 V 552"/><path d="M670 526 V 552"/>
-    <path d="M880 452 V 552"/><path d="M1090 452 V 552"/><path d="M1320 452 V 552"/>
-  </g>
-  <rect x="370" y="552" width="1060" height="84" rx="2" fill="#E0ECFF" stroke="#C7DAFF"/>
-  <text x="390" y="582" font-size="16" font-weight="700" fill="#2B2828">Shared state (TypedDict)</text>
-  <text x="390" y="606" font-size="13" fill="#2B2828">topic · sources S1…Sn · findings · comparison · evaluation · report · events</text>
-  <text x="390" y="626" font-size="13" fill="#605C5C">Reducers merge agent status, timings and errors, so no agent overwrites another agent’s bookkeeping.</text>
-
-  <!-- outputs -->
-  <path d="M1430 402 H 1496" fill="none" stroke="#2B2828" stroke-width="1.8" marker-end="url(#arrow)"/>
-  <rect x="1500" y="352" width="170" height="100" rx="2" fill="#FFFFFF" stroke="#2B2828" stroke-width="1.6"/>
-  <text x="1585" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#2B2828">Outputs</text>
-  <text x="1585" y="410" text-anchor="middle" font-size="13" fill="#605C5C">report_&lt;time&gt;.md</text>
-  <text x="1585" y="430" text-anchor="middle" font-size="13" fill="#605C5C">run_&lt;time&gt;.json</text>
-
-  <!-- ===================== local model ===================== -->
-  <g stroke="#1F5BF0" stroke-width="1.6" stroke-dasharray="6 6">
-    <path d="M670 660 V 716"/><path d="M880 660 V 716"/><path d="M1090 660 V 716"/><path d="M1320 660 V 716"/>
-  </g>
-  <text x="1336" y="694" font-size="13" fill="#1F5BF0">every agent calls the same local model</text>
-  <rect x="580" y="720" width="850" height="96" rx="2" fill="#FFFFFF" stroke="#1F5BF0" stroke-width="2" stroke-dasharray="8 5"/>
-  <text x="1005" y="756" text-anchor="middle" font-size="18" font-weight="700" fill="#2B2828">Local model · Ollama · Qwen3.5 (4B by default, 2B on an 8 GB laptop)</text>
-  <text x="1005" y="784" text-anchor="middle" font-size="13" fill="#605C5C">Runs on the laptop, never online, no paid API · JSON-schema structured output + Pydantic validation · one bounded retry</text>
-  <text x="1005" y="804" text-anchor="middle" font-size="13" fill="#605C5C">Cloud models (*-cloud) are refused</text>
-
-  <!-- ===================== guards + legend ===================== -->
-  <rect x="40" y="850" width="1630" height="94" rx="2" fill="#0B1B29"/>
-  <text x="64" y="882" font-size="13" font-weight="600" letter-spacing="2" fill="#60A5FA">CODE-SIDE GUARDS</text>
-  <text x="64" y="910" font-size="15" fill="#FFFFFF">Citation registry S1…Sn · unknown [S#] stripped · references built from retrieved URLs · benchmark score kept only if it appears in its source</text>
-  <text x="64" y="932" font-size="15" fill="#CBD5E1">Attribution check on prose · licence category by rules (open source vs open weights) · memory = params × bytes × 1.2 · labelled fallbacks</text>
-  <g font-size="13" fill="#605C5C">
-    <rect x="40" y="250" width="14" height="14" fill="#0B1B29"/><text x="62" y="262">Agent (uses the model)</text>
-    <rect x="226" y="250" width="14" height="14" fill="#FFFFFF" stroke="#2B2828"/><text x="248" y="262">Plain code</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1216" height="1000" viewBox="0 0 1216 1000" font-family="'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif">
+<!-- Research Agents architecture, GenAI Protos POC style. Editable: plain SVG text and shapes. -->
+<rect width="1216" height="1000" fill="#FFFFFF"/>
+<rect x="0.5" y="0.5" width="1215" height="999" fill="none" stroke="#E2E8F0"/>
+<text x="608.0" y="62" font-size="30" font-weight="700" fill="#2B2828" text-anchor="middle">How Research Agents answers a question</text>
+<text x="608.0" y="94" font-size="15" font-weight="400" fill="#605C5C" text-anchor="middle">GenAI Protos · 4 agents and 1 local model · blue outline: the local model does the work, grey: plain code</text>
+<rect x="24" y="124" width="373" height="80" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<g transform="translate(46 152) scale(1.0)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></g>
+<text x="88" y="158" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Your question</text>
+<text x="88" y="182" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">A technical topic, in plain words</text>
+<rect x="421" y="124" width="373" height="80" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<g transform="translate(443 152) scale(1.0)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></g>
+<text x="485" y="158" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">4 agents + 1 local model</text>
+<text x="485" y="182" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">LangGraph workflow · Qwen3.5 on Ollama</text>
+<rect x="818" y="124" width="373" height="80" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<g transform="translate(840 152) scale(1.0)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></g>
+<text x="882" y="158" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Cited report</text>
+<text x="882" y="182" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">10 sections · every link was retrieved</text>
+<text x="24" y="246" font-size="12" font-weight="700" fill="#2B2828" text-anchor="start" letter-spacing="1.5">RESEARCH THE QUESTION</text>
+<rect x="24" y="262" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<g transform="translate(42 282) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></g>
+<text x="76" y="300" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Check</text>
+<line x1="76" y1="316" x2="268" y2="316" stroke="#2B2828" stroke-width="1"/>
+<text x="76" y="342" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Topic: 10 to 1,000 chars</text>
+<text x="76" y="364" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Ollama and model ready?</text>
+<text x="76" y="386" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">If not, stop with a</text>
+<text x="76" y="408" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">clear message</text>
+<rect x="326" y="262" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#1F5BF0" stroke-width="2"/>
+<g transform="translate(344 282) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></g>
+<text x="378" y="300" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Plan and search</text>
+<line x1="378" y1="316" x2="570" y2="316" stroke="#2B2828" stroke-width="1"/>
+<text x="378" y="342" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Model picks search terms</text>
+<text x="378" y="364" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Code searches the web,</text>
+<text x="378" y="386" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Hugging Face, arXiv, GitHub</text>
+<text x="378" y="408" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Sources numbered S1 to Sn</text>
+<rect x="628" y="262" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#1F5BF0" stroke-width="2"/>
+<g transform="translate(646 282) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></g>
+<text x="680" y="300" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Read the sources</text>
+<line x1="680" y1="316" x2="872" y2="316" stroke="#2B2828" stroke-width="1"/>
+<text x="680" y="342" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Code picks best passages</text>
+<text x="680" y="364" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Model notes the facts</text>
+<text x="680" y="386" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">in each source</text>
+<text x="680" y="408" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Only facts in the text kept</text>
+<rect x="930" y="262" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#1F5BF0" stroke-width="2"/>
+<g transform="translate(948 282) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></g>
+<text x="982" y="300" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Compare the models</text>
+<line x1="982" y1="316" x2="1174" y2="316" stroke="#2B2828" stroke-width="1"/>
+<text x="982" y="342" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Chooses up to 4 models</text>
+<text x="982" y="364" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">One row per model, from</text>
+<text x="982" y="386" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">that model’s evidence</text>
+<text x="982" y="408" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Licence, size from APIs</text>
+<line x1="294" y1="352.0" x2="312" y2="352.0" stroke="#2B2828" stroke-width="1.6"/><path d="M311 347.0 L320 352.0 L311 357.0" fill="none" stroke="#2B2828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="596" y1="352.0" x2="614" y2="352.0" stroke="#2B2828" stroke-width="1.6"/><path d="M613 347.0 L622 352.0 L613 357.0" fill="none" stroke="#2B2828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="898" y1="352.0" x2="916" y2="352.0" stroke="#2B2828" stroke-width="1.6"/><path d="M915 347.0 L924 352.0 L915 357.0" fill="none" stroke="#2B2828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="24" y="478" font-size="12" font-weight="700" fill="#2B2828" text-anchor="start" letter-spacing="1.5">CHECK AND WRITE THE REPORT</text>
+<line x1="1061.0" y1="450" x2="1061.0" y2="488" stroke="#2B2828" stroke-width="1.6"/><path d="M1056.0 480 L1061.0 489 L1066.0 480" fill="none" stroke="#2B2828" stroke-width="1.6" stroke-linecap="round"/>
+<text x="1075.0" y="476" font-size="12" font-weight="700" fill="#2B2828" text-anchor="start" letter-spacing="1.5">TABLE READY</text>
+<rect x="24" y="496" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<g transform="translate(42 516) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></g>
+<text x="76" y="534" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Saved report</text>
+<line x1="76" y1="550" x2="268" y2="550" stroke="#2B2828" stroke-width="1"/>
+<text x="76" y="576" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">report_&lt;time&gt;.md</text>
+<text x="76" y="598" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">10 sections, cited</text>
+<text x="76" y="620" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">run_&lt;time&gt;.json</text>
+<text x="76" y="642" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">every event, replayable</text>
+<rect x="326" y="496" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<g transform="translate(344 516) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></g>
+<text x="378" y="534" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Check citations</text>
+<line x1="378" y1="550" x2="570" y2="550" stroke="#2B2828" stroke-width="1"/>
+<text x="378" y="576" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Unknown [S#] removed</text>
+<text x="378" y="598" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Sentences crediting the</text>
+<text x="378" y="620" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">wrong source removed</text>
+<text x="378" y="642" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">References built by code</text>
+<rect x="628" y="496" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#1F5BF0" stroke-width="2"/>
+<g transform="translate(646 516) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></g>
+<text x="680" y="534" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Write</text>
+<line x1="680" y1="550" x2="872" y2="550" stroke="#2B2828" stroke-width="1"/>
+<text x="680" y="576" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Model writes the prose</text>
+<text x="680" y="598" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Code builds every table</text>
+<text x="680" y="620" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">and the methodology</text>
+<text x="680" y="642" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Recommendations by rules</text>
+<rect x="930" y="496" width="262" height="180" rx="2" fill="#FFFFFF" stroke="#1F5BF0" stroke-width="2"/>
+<g transform="translate(948 516) scale(0.9166666666666666)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></g>
+<text x="982" y="534" font-size="17" font-weight="700" fill="#2B2828" text-anchor="start">Evaluate</text>
+<line x1="982" y1="550" x2="1174" y2="550" stroke="#2B2828" stroke-width="1"/>
+<text x="982" y="576" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Model proposes scores</text>
+<text x="982" y="598" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Kept only if in the</text>
+<text x="982" y="620" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">cited source</text>
+<text x="982" y="642" font-size="14" font-weight="400" fill="#2B2828" text-anchor="start">Memory estimated by code</text>
+<line x1="318" y1="586.0" x2="300" y2="586.0" stroke="#2B2828" stroke-width="1.6"/><path d="M301 581.0 L292 586.0 L301 591.0" fill="none" stroke="#2B2828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="620" y1="586.0" x2="602" y2="586.0" stroke="#2B2828" stroke-width="1.6"/><path d="M603 581.0 L594 586.0 L603 591.0" fill="none" stroke="#2B2828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="922" y1="586.0" x2="904" y2="586.0" stroke="#2B2828" stroke-width="1.6"/><path d="M905 581.0 L896 586.0 L905 591.0" fill="none" stroke="#2B2828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="24" y="704" width="1168" height="132" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<text x="608.0" y="734" font-size="17" font-weight="700" fill="#2B2828" text-anchor="middle">Quality measures, shown with every report</text>
+<text x="46.0" y="772" font-size="15" font-weight="700" fill="#2B2828" text-anchor="start">Sources cited</text>
+<text x="46.0" y="794" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">references that were</text>
+<text x="46.0" y="813" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">really retrieved</text>
+<line x1="218.66666666666666" y1="752" x2="218.66666666666666" y2="822" stroke="#2B2828" stroke-width="1"/>
+<text x="240.66666666666666" y="772" font-size="15" font-weight="700" fill="#2B2828" text-anchor="start">Unknown citations</text>
+<text x="240.66666666666666" y="794" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">[S#] with no source,</text>
+<text x="240.66666666666666" y="813" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">removed and counted</text>
+<line x1="413.3333333333333" y1="752" x2="413.3333333333333" y2="822" stroke="#2B2828" stroke-width="1"/>
+<text x="435.3333333333333" y="772" font-size="15" font-weight="700" fill="#2B2828" text-anchor="start">Verified benchmarks</text>
+<text x="435.3333333333333" y="794" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">score found in the</text>
+<text x="435.3333333333333" y="813" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">source it cites</text>
+<line x1="608.0" y1="752" x2="608.0" y2="822" stroke="#2B2828" stroke-width="1"/>
+<text x="630.0" y="772" font-size="15" font-weight="700" fill="#2B2828" text-anchor="start">Rejected scores</text>
+<text x="630.0" y="794" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">proposed, but not in</text>
+<text x="630.0" y="813" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">the cited text</text>
+<line x1="802.6666666666666" y1="752" x2="802.6666666666666" y2="822" stroke="#2B2828" stroke-width="1"/>
+<text x="824.6666666666666" y="772" font-size="15" font-weight="700" fill="#2B2828" text-anchor="start">Removed sentences</text>
+<text x="824.6666666666666" y="794" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">credited a source that</text>
+<text x="824.6666666666666" y="813" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">never said it</text>
+<line x1="997.3333333333333" y1="752" x2="997.3333333333333" y2="822" stroke="#2B2828" stroke-width="1"/>
+<text x="1019.3333333333333" y="772" font-size="15" font-weight="700" fill="#2B2828" text-anchor="start">Time per run</text>
+<text x="1019.3333333333333" y="794" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">seconds per agent on</text>
+<text x="1019.3333333333333" y="813" font-size="13.5" font-weight="400" fill="#2B2828" text-anchor="start">a laptop CPU</text>
+<rect x="24" y="856" width="1168" height="112" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+<g transform="translate(52.0 886) scale(1.1666666666666667)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></g>
+<text x="98.0" y="900" font-size="16" font-weight="700" fill="#2B2828" text-anchor="start">Model</text>
+<text x="98.0" y="922" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">qwen3.5:2b (Qwen3.5)</text>
+<text x="98.0" y="942" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">Apache 2.0 licence</text>
+<line x1="316.0" y1="876" x2="316.0" y2="948" stroke="#2B2828" stroke-width="1"/>
+<g transform="translate(344.0 886) scale(1.1666666666666667)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></g>
+<text x="390.0" y="900" font-size="16" font-weight="700" fill="#2B2828" text-anchor="start">Runs on</text>
+<text x="390.0" y="922" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">Laptop CPU, 8 GB RAM</text>
+<text x="390.0" y="942" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">No GPU needed</text>
+<line x1="608.0" y1="876" x2="608.0" y2="948" stroke="#2B2828" stroke-width="1"/>
+<g transform="translate(636.0 886) scale(1.1666666666666667)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></g>
+<text x="682.0" y="900" font-size="16" font-weight="700" fill="#2B2828" text-anchor="start">Paid APIs</text>
+<text x="682.0" y="922" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">None. The model</text>
+<text x="682.0" y="942" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">never goes online</text>
+<line x1="900.0" y1="876" x2="900.0" y2="948" stroke="#2B2828" stroke-width="1"/>
+<g transform="translate(928.0 886) scale(1.1666666666666667)" fill="none" stroke="#2B2828" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></g>
+<text x="974.0" y="900" font-size="16" font-weight="700" fill="#2B2828" text-anchor="start">Model size</text>
+<text x="974.0" y="922" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">2.7 GB on disk</text>
+<text x="974.0" y="942" font-size="14" font-weight="400" fill="#605C5C" text-anchor="start">about 18 min per run</text>
 </svg>

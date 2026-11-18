@@ -12,7 +12,8 @@ All LLM inference runs **locally through Ollama**: no paid APIs, no API keys req
 |---|---|
 | **Live demo** (replays the real run as a flow diagram, no install needed) | [research-agents-blush.vercel.app](https://research-agents-blush.vercel.app/) |
 | **POC document** (team template: approach, screenshots, test evidence, model documentation) | [`docs/poc-document/POC_Document.pdf`](docs/poc-document/POC_Document.pdf) · editable source [`POC_Document.html`](docs/poc-document/POC_Document.html) |
-| **Architecture diagram** (editable SVG) | [`docs/poc-document/architecture.svg`](docs/poc-document/architecture.svg) |
+| **POC Report** (team reference format, Word) | [`docs/poc-document/Research Agents - POC Report.docx`](<docs/poc-document/Research Agents - POC Report.docx>) |
+| **Architecture diagram** (editable SVG) | [`docs/poc-document/architecture.svg`](docs/poc-document/architecture.svg) · detailed: [`architecture-detailed.svg`](docs/poc-document/architecture-detailed.svg) |
 | **Example report** (real run, unedited) | [`outputs/example_report.md`](outputs/example_report.md) |
 | **Full record of that run** (sources, findings, table, timings, every event) | [`outputs/example_run.json`](outputs/example_run.json) |
 | **Original brief** | [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.md) |

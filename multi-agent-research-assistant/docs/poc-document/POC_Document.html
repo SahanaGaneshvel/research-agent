@@ -517,7 +517,7 @@
   </g>
 </svg>
 
-      <figcaption><b>Figure 13.</b> Architecture. Editable source: <code>docs/poc-document/architecture.svg</code> (plain SVG; opens in any browser, Figma, Inkscape or draw.io). A PNG copy is in <code>docs/poc-document/images/</code>.</figcaption>
+      <figcaption><b>Figure 13.</b> Architecture. Editable source: <code>docs/poc-document/architecture-detailed.svg</code> (plain SVG; opens in any browser, Figma, Inkscape or draw.io). A PNG copy is in <code>docs/poc-document/images/</code>.</figcaption>
     </figure>
     <ul>
       <li><strong>Interfaces.</strong> The Streamlit app calls the workflow directly. The Next.js page talks to a FastAPI server, which runs the same workflow and streams each step as Server-Sent Events.</li>
@@ -643,6 +643,7 @@
       <tr><td>Results vary between runs</td><td>Search engines return different pages, so two runs of the same question can give different tables.</td></tr>
       <tr><td>Free web search is fragile</td><td>Free engines often refuse automated clients. The tool tries several in turn and records which answered; if all fail, research continues with the other sources.</td></tr>
       <tr><td>Narrow checks</td><td>The attribution check confirms that a cited source mentions the model a sentence names, not every claim in it. Benchmark verification is textual: number and name appear in the source, not necessarily together.</td></tr>
+      <tr><td>Model selection <span class="tag no">Found 18 Nov</span></td><td>Anything with its own GitHub repository or model card is always compared, so a tool can slip in as a “model”: in the 18 November run, SGLang (a serving tool) was compared and took Inkling-2-Small’s parameter count. The selection step should also check that every pick is a model.</td></tr>
       <tr><td>Thin benchmark evidence</td><td>Model cards often put scores in images or long tables that the passages read do not reach, so runs often report that no score could be verified.</td></tr>
       <tr><td>Shallow retrieval by design</td><td>About 2 to 4 sources per category; arXiv abstracts only (no PDF parsing); pages that need JavaScript give little text.</td></tr>
       <tr><td>Rule-based licence categories</td><td>Conservative: unusual licence names (for example Hugging Face’s <code>other</code>) become “Unknown” rather than guessed.</td></tr>
@@ -688,6 +689,7 @@ python -m pytest</pre>
     </div>
     <h3>Recommended next steps</h3>
     <ol>
+      <li><strong>Stricter model selection:</strong> check that every compared name is a model, not a tool or framework, even when it has its own repository.</li>
       <li><strong>Deeper start-up check:</strong> one tiny generation before a run, so a broken runtime is caught before research starts.</li>
       <li><strong>Larger model on a GPU</strong> (4B to 8B): better reasoning and narrative, much faster runs, with no pipeline changes.</li>
       <li><strong>An accuracy test set:</strong> a few questions with known answers to measure how many facts the system gets right, alongside the existing tests.</li>
@@ -810,8 +812,8 @@ python -m pytest</pre>
   <table class="t">
     <thead><tr><th style="width:32%">Deliverable</th><th style="width:12%">Status</th><th>Where</th></tr></thead>
     <tr><td>Working code, experiment or assessment</td><td><span class="tag ok">Done</span></td><td>GitHub repository; branded Streamlit app and web page</td></tr>
-    <tr><td>Completed project document</td><td><span class="tag ok">Done</span></td><td>This document: <code>docs/poc-document/POC_Document.pdf</code> (source: <code>POC_Document.html</code>)</td></tr>
-    <tr><td>Architecture diagram and editable source</td><td><span class="tag ok">Done</span></td><td>Section 7; <code>docs/poc-document/architecture.svg</code> and <code>images/architecture.png</code></td></tr>
+    <tr><td>Completed project document</td><td><span class="tag ok">Done</span></td><td>POC Report in the team’s reference format: <code>docs/poc-document/Research Agents - POC Report.docx</code>. This document is the detailed technical version.</td></tr>
+    <tr><td>Architecture diagram and editable source</td><td><span class="tag ok">Done</span></td><td>Section 7; <code>docs/poc-document/architecture-detailed.svg</code> and <code>images/architecture-detailed.png</code></td></tr>
     <tr><td>Test results and failure examples</td><td><span class="tag ok">Done</span></td><td>Section 9; Appendix D; <code>docs/test_results.txt</code></td></tr>
     <tr><td>Setup and execution instructions</td><td><span class="tag ok">Done</span></td><td>Section 13; project README</td></tr>
     <tr><td>Demo or walkthrough</td><td><span class="tag ok">Done</span></td><td>Live replay: research-agents-blush.vercel.app; walkthrough in section 6</td></tr>

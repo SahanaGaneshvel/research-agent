@@ -24,3 +24,7 @@ Thumbs.db
 
 # Internal company brand guidelines (only the logo files the UI needs are committed)
 **/brand-guidelines/
+
+# POC delivery package (shared as a zip, not part of the repo)
+/Research Agents/
+/Research Agents.zip

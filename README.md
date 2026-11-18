@@ -85,6 +85,7 @@ along with the flaws still in the example report, which I left in on purpose.
 | | |
 |---|---|
 | Live demo | [research-agents-blush.vercel.app](https://research-agents-blush.vercel.app/) |
+| POC Report (reference format, Word) | [`docs/poc-document/Research Agents - POC Report.docx`](<multi-agent-research-assistant/docs/poc-document/Research Agents - POC Report.docx>) |
 | POC document (team template, screenshots, model documentation) | [`docs/poc-document/POC_Document.pdf`](multi-agent-research-assistant/docs/poc-document/POC_Document.pdf) |
 | Example report (real run, unedited) | [`outputs/example_report.md`](multi-agent-research-assistant/outputs/example_report.md) |
 | Original brief | [`docs/PROJECT_BRIEF.md`](multi-agent-research-assistant/docs/PROJECT_BRIEF.md) |
