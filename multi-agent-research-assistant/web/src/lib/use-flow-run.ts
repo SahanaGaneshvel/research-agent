@@ -6,6 +6,7 @@ import { getHealth, streamResearch } from "./api";
 import type { FlowEvent, Health, RunState } from "./types";
 
 export type Mode = "idle" | "replay" | "live";
+export type Depth = "basic" | "detailed";
 export const SPEEDS = [10, 30, 100] as const;
 
 /**
@@ -108,7 +109,7 @@ export function useFlowRun() {
     setPlaying(false);
   }, [end]);
 
-  const runLive = useCallback((topic: string) => {
+  const runLive = useCallback((topic: string, depth: Depth = "basic") => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -117,7 +118,7 @@ export function useFlowRun() {
     setLiveState(null);
     setLiveNow(0);
     setError(null);
-    streamResearch(topic, "basic", (event, data) => {
+    streamResearch(topic, depth, (event, data) => {
       if (event === "agent") setLiveEvents((prev) => [...prev, data as FlowEvent]);
       else if (event === "done") {
         const state = data as RunState;

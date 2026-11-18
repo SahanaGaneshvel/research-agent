@@ -52,4 +52,8 @@ python -m orchestration.workflow                                  # records outp
 python scripts/export_replay.py outputs/run_<timestamp>.json      # writes public/recorded-run.json
 ```
 
-Stack: Next.js 16 (App Router), React 19, Tailwind CSS v4, Motion, react-markdown.
+Stack: Next.js 16 (App Router), React 19, Tailwind CSS v4, Motion, react-markdown, lucide-react.
+
+Branding follows the GenAI Protos guidelines: Google Sans (loaded with `next/font/google`), Primary Blue
+`#1F5BF0`, Charcoal `#2B2828`, Navy `#0B1B29`, page background `#F7FAFF`, 2 px corners. The colour tokens
+live in `src/app/globals.css`; the logos are in `public/brand/` and the favicon is `src/app/icon.png`.

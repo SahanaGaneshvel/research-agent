@@ -21,3 +21,6 @@ venv/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Internal company brand guidelines (only the logo files the UI needs are committed)
+**/brand-guidelines/

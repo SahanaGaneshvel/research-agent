@@ -46,10 +46,10 @@ function up(model: Box, b: Box) {
   return `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`;
 }
 
-const INK = "#1d1c1a", LINE = "#d9d4c8", MUTED = "#706d66", ACCENT = "#b4532a", CARD = "#fffdf9";
+const INK = "#2b2828", NAVY = "#0b1b29", LINE = "#cbd5e1", MUTED = "#605c5c", ACCENT = "#1f5bf0", CARD = "#ffffff", FAILED = "#b91c1c";
 
 function stroke(s: NodeState) {
-  return s.status === "working" ? ACCENT : s.status === "done" ? INK : s.status === "failed" ? ACCENT : LINE;
+  return s.status === "working" ? ACCENT : s.status === "done" ? NAVY : s.status === "failed" ? FAILED : LINE;
 }
 
 function SvgNode({ b, s, selected, onSelect, reduce }: {
@@ -72,7 +72,7 @@ function SvgNode({ b, s, selected, onSelect, reduce }: {
     >
       {working && !reduce && (
         <motion.rect
-          x={b.x - 5} y={b.y - 5} width={b.w + 10} height={b.h + 10} rx={14}
+          x={b.x - 5} y={b.y - 5} width={b.w + 10} height={b.h + 10} rx={4}
           fill="none" stroke={ACCENT} strokeWidth={1.5}
           animate={{ opacity: [0.15, 0.7, 0.15] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
@@ -80,27 +80,27 @@ function SvgNode({ b, s, selected, onSelect, reduce }: {
       )}
       <rect
         className="node-box"
-        x={b.x} y={b.y} width={b.w} height={b.h} rx={10}
-        fill={CARD} stroke={selected ? INK : stroke(s)} strokeWidth={selected ? 2 : working ? 1.6 : 1.2}
+        x={b.x} y={b.y} width={b.w} height={b.h} rx={3}
+        fill={CARD} stroke={selected ? ACCENT : stroke(s)} strokeWidth={selected ? 2.4 : working ? 1.8 : 1.3}
         strokeDasharray={s.status === "skipped" ? "4 4" : undefined}
         style={{ transition: "stroke 0.4s" }}
       />
       <text
         x={b.x + b.w / 2} y={b.y + b.h / 2 - 4} textAnchor="middle"
         fill={s.status === "waiting" ? MUTED : INK}
-        style={{ fontFamily: "var(--font-newsreader)", fontSize: b.h > 70 ? 19 : 16, transition: "fill 0.4s" }}
+        style={{ fontFamily: "var(--font-google-sans)", fontWeight: 600, fontSize: b.h > 70 ? 17 : 15, transition: "fill 0.4s" }}
       >
         {b.title}
       </text>
       <text
         x={b.x + b.w / 2} y={b.y + b.h / 2 + 15} textAnchor="middle"
         fill={working ? ACCENT : MUTED}
-        style={{ fontFamily: "var(--font-plex-sans)", fontSize: 11.5 }}
+        style={{ fontFamily: "var(--font-google-sans)", fontSize: 12 }}
       >
         {s.line}
       </text>
       {s.status === "done" && b.id !== "model" && (
-        <circle cx={b.x + b.w - 11} cy={b.y + 11} r={3.5} fill={INK} />
+        <circle cx={b.x + b.w - 11} cy={b.y + 11} r={3.5} fill={ACCENT} />
       )}
     </g>
   );
@@ -111,7 +111,7 @@ function Flow({ d, active, done, modelLink, reduce }: { d: string; active: boole
     <g>
       <path
         d={d} fill="none"
-        stroke={active ? ACCENT : done ? INK : LINE}
+        stroke={active ? ACCENT : done ? NAVY : LINE}
         strokeWidth={active ? 1.6 : 1.2}
         strokeDasharray={modelLink ? "3 5" : undefined}
         strokeOpacity={modelLink && !active ? 0.6 : 1}
@@ -150,7 +150,7 @@ function DesktopDiagram({ layers, selected, onSelect }: Props) {
       {BOXES.map((b) => (
         <SvgNode key={b.id} b={b} s={n[b.id]} selected={selected === b.id} onSelect={onSelect} reduce={reduce} />
       ))}
-      <text x={585} y={16} textAnchor="middle" fill={MUTED} style={{ fontFamily: "var(--font-plex-sans)", fontSize: 11, letterSpacing: 1.2 }}>
+      <text x={585} y={16} textAnchor="middle" fill={MUTED} style={{ fontFamily: "var(--font-google-sans)", fontWeight: 600, fontSize: 11, letterSpacing: 1.6 }}>
         WHERE THE RESEARCH COMES FROM
       </text>
     </svg>
@@ -174,12 +174,12 @@ function MobileDiagram({ layers, selected, onSelect }: Props) {
             <button
               type="button"
               onClick={() => onSelect(s.id)}
-              className={`flex w-full items-baseline justify-between rounded-lg border bg-card px-4 py-3 text-left transition-colors ${
-                selected === s.id ? "border-ink" : st.status === "working" ? "border-accent" : st.status === "done" ? "border-ink/40" : "border-line"
+              className={`flex w-full items-baseline justify-between rounded-xs border bg-card px-4 py-3 text-left transition-colors ${
+                selected === s.id ? "border-primary ring-2 ring-primary/15" : st.status === "working" ? "border-primary" : st.status === "done" ? "border-navy/50" : "border-line"
               }`}
             >
-              <span className={`font-serif text-lg ${st.status === "waiting" ? "text-muted" : "text-ink"}`}>{s.title}</span>
-              <span className={`text-[0.8rem] ${st.status === "working" ? "text-accent" : "text-muted"}`}>
+              <span className={`text-base font-semibold ${st.status === "waiting" ? "text-muted" : "text-ink"}`}>{s.title}</span>
+              <span className={`text-[0.8rem] ${st.status === "working" ? "text-primary" : "text-muted"}`}>
                 {st.line}
                 {s.id !== "question" && layers.modelBusyFor === s.id && " · AI model"}
               </span>
@@ -188,13 +188,13 @@ function MobileDiagram({ layers, selected, onSelect }: Props) {
               <div className="mt-2 flex flex-wrap gap-1.5 pl-4">
                 {(["web", "cards", "papers", "code"] as NodeId[]).map((id) => (
                   <button key={id} type="button" onClick={() => onSelect(id)}
-                    className={`rounded-full border px-2.5 py-0.5 text-[0.75rem] ${n[id].status === "working" ? "border-accent text-accent" : n[id].status === "done" ? "border-ink/40 text-ink-2" : "border-line text-muted"}`}>
+                    className={`rounded-full border px-2.5 py-0.5 text-[0.75rem] ${n[id].status === "working" ? "border-primary text-primary" : n[id].status === "done" ? "border-navy/40 text-ink" : "border-line text-muted"}`}>
                     {{ web: "Web", cards: "Model cards", papers: "Papers", code: "Code" }[id as "web"]} · {n[id].line}
                   </button>
                 ))}
               </div>
             )}
-            {i < steps.length - 1 && <div className={`mx-auto h-5 w-px ${n[steps[i + 1].id].status !== "waiting" ? "bg-ink/50" : "bg-line"}`} />}
+            {i < steps.length - 1 && <div className={`mx-auto h-5 w-px ${n[steps[i + 1].id].status !== "waiting" ? "bg-navy/50" : "bg-line"}`} />}
           </li>
         );
       })}

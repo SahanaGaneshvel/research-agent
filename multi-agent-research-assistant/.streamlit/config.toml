@@ -1,0 +1,18 @@
+# GenAI Protos brand theme (brand-guidelines: colours, Google Sans, near-square corners)
+[theme]
+base = "light"
+primaryColor = "#1F5BF0"
+backgroundColor = "#F7FAFF"
+secondaryBackgroundColor = "#F1F5F9"
+textColor = "#2B2828"
+linkColor = "#1F5BF0"
+borderColor = "#E2E8F0"
+showWidgetBorder = true
+baseRadius = "2px"
+font = "Google Sans:https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400..700;1,400..700&display=swap"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

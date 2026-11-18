@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Research Agents · POC Documentation · GenAI Protos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  /* GenAI Protos brand: Google Sans, Primary Blue #1F5BF0, Charcoal #2B2828, Navy #0B1B29, 2 px corners */
+  :root { --primary:#1F5BF0; --ink:#2B2828; --navy:#0B1B29; --page:#F7FAFF; --muted:#605C5C;
+          --soft:#E0ECFF; --border-blue:#C7DAFF; --line:#E2E8F0; --line-soft:#F1F5F9; --field:#F8FAFC; }
+  @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+  @page :first { margin: 0; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         color: var(--ink); font-size: 10.2pt; line-height: 1.55; background: #fff; }
+  a { color: var(--primary); text-decoration: none; }
+  p { margin: 0 0 8pt; }
+  strong { font-weight: 600; }
+  code { font-family: Consolas, "SFMono-Regular", Menlo, monospace; font-size: 0.88em; background: var(--field);
+         border: 1px solid var(--line-soft); padding: 0 3px; border-radius: 2px; }
+  pre { font-family: Consolas, Menlo, monospace; font-size: 8.4pt; line-height: 1.5; background: var(--navy); color: #E2E8F0;
+        padding: 10pt 12pt; border-radius: 2px; white-space: pre-wrap; margin: 6pt 0 10pt; break-inside: avoid; }
+  ul, ol { margin: 0 0 8pt; padding-left: 16pt; }
+  li { margin: 2pt 0; }
+
+  /* ---------- cover */
+  .cover { height: 297mm; position: relative; background: #fff; overflow: hidden; break-after: page; }
+  .cover-glow { position: absolute; inset: 0;
+    background: radial-gradient(120mm 80mm at 90% 8%, rgba(31,91,240,.10), transparent 70%),
+                radial-gradient(110mm 70mm at 0% 45%, rgba(96,165,250,.12), transparent 70%),
+                linear-gradient(180deg, #EEF3FE 0%, #FFFFFF 55%, #F7FAFF 100%); }
+  .cover-inner { position: relative; padding: 26mm 22mm 0; }
+  .cover-logo { height: 13mm; }
+  .eyebrow { font-size: 8.5pt; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--primary); margin: 0 0 6pt; }
+  .cover h1 { font-size: 34pt; line-height: 1.08; letter-spacing: -.01em; margin: 44mm 0 10pt; font-weight: 700; }
+  .cover .subtitle { font-size: 14pt; color: var(--muted); max-width: 150mm; line-height: 1.45; }
+  .accent-rule { height: 1px; margin: 14mm 0 8mm; background: linear-gradient(90deg, var(--primary), rgba(31,91,240,.15), transparent); }
+  .meta { border-collapse: collapse; font-size: 10pt; }
+  .meta td { padding: 3pt 14pt 3pt 0; vertical-align: top; }
+  .meta td:first-child { color: var(--muted); width: 34mm; }
+  .cover-band { position: absolute; left: 0; right: 0; bottom: 0; background: var(--navy); color: #CBD5E1;
+                padding: 12mm 22mm; display: flex; justify-content: space-between; align-items: center; }
+  .cover-band img { height: 7mm; }
+  .cover-band span { font-size: 9.5pt; }
+
+  /* ---------- sections */
+  .part { break-before: page; }
+  .part-head { background: var(--navy); color: #fff; padding: 14pt 16pt; border-radius: 2px; margin-bottom: 14pt; }
+  .part-head .eyebrow { color: #60A5FA; }
+  .part-head h1 { font-size: 20pt; margin: 2pt 0 0; font-weight: 700; }
+  .part-head p { color: #CBD5E1; margin: 4pt 0 0; font-size: 10pt; }
+  section.s { margin: 0 0 16pt; }
+  section.s.newpage { break-before: page; }
+  h2 { font-size: 16pt; line-height: 1.2; margin: 18pt 0 8pt; font-weight: 700; break-after: avoid; }
+  h2 .num { display: inline-block; min-width: 9mm; color: var(--primary); }
+  h3 { font-size: 11.5pt; margin: 12pt 0 5pt; font-weight: 700; break-after: avoid; }
+  .lead { font-size: 11.2pt; color: #3D3A3A; }
+
+  /* ---------- tables */
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.9pt; margin: 4pt 0 12pt; break-inside: auto; }
+  table.t th { text-align: left; font-weight: 600; background: var(--field); border-bottom: 1px solid var(--line);
+               border-top: 1px solid var(--line); padding: 5pt 6pt; }
+  table.t td { border-bottom: 1px solid var(--line); padding: 5pt 6pt; vertical-align: top; }
+  table.t tr { break-inside: avoid; }
+  .tag { display: inline-block; font-size: 7.6pt; font-weight: 600; padding: 1pt 6pt; border-radius: 999px; white-space: nowrap; }
+  .ok { background: #D1FAE5; color: #059669; }
+  .part-ok { background: #E0ECFF; color: var(--primary); }
+  .no { background: #FEF2F2; color: #B91C1C; }
+  .exp { background: #E0ECFF; color: var(--primary); }
+
+  /* ---------- callouts, cards */
+  .callout { background: var(--page); border: 1px solid var(--border-blue); border-left: 3px solid var(--primary);
+             padding: 9pt 12pt; border-radius: 2px; margin: 6pt 0 12pt; break-inside: avoid; }
+  .callout.warn { background: #FEF2F2; border-color: #FECACA; border-left-color: #B91C1C; }
+  .callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8pt; margin: 6pt 0 12pt; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .card { border: 1px solid var(--line); border-radius: 2px; padding: 9pt 11pt; background: #fff; break-inside: avoid; }
+  .card h4 { margin: 0 0 3pt; font-size: 10.4pt; }
+  .card p { margin: 0; font-size: 9.2pt; color: #3D3A3A; }
+  .card .k { font-size: 7.8pt; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--primary); margin-bottom: 3pt; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8pt; margin: 8pt 0 14pt; }
+  .stat { background: var(--navy); color: #fff; padding: 10pt 12pt; border-radius: 2px; }
+  .stat b { display: block; font-size: 18pt; line-height: 1.1; }
+  .stat span { font-size: 8.4pt; color: #CBD5E1; }
+
+  /* ---------- figures */
+  figure { margin: 6pt 0 14pt; break-inside: avoid; }
+  figure img, figure svg { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 2px; }
+  figure.narrow img { width: 62%; margin: 0 auto; }
+  figure.phone img { width: 34%; margin: 0 auto; }
+  figure > img, figure > .crop { width: 86% !important; margin-left: auto; margin-right: auto; }
+  figure > figcaption { width: 86%; margin-left: auto; margin-right: auto; }
+  figure.phone > img { width: 34% !important; }
+  figcaption { font-size: 8.4pt; color: var(--muted); margin-top: 5pt; }
+  figcaption b { color: var(--ink); }
+  .crop { overflow: hidden; border: 1px solid var(--line); border-radius: 2px; }
+  .crop img { border: 0; }
+  .crop + figcaption { margin-top: 5pt; }
+  .crop + figcaption { margin-top: 5pt; }
+  .toc { columns: 2; column-gap: 12mm; font-size: 9.8pt; margin: 6pt 0 0; padding: 0; list-style: none; }
+  .toc li { break-inside: avoid; padding: 3pt 0; border-bottom: 1px solid var(--line-soft); }
+  .toc .n { color: var(--primary); font-weight: 600; display: inline-block; width: 9mm; }
+  .muted { color: var(--muted); }
+  .small { font-size: 8.8pt; }
+</style>
+</head>
+<body>
+
+<!-- ======================================================================= COVER -->
+<div class="cover">
+  <div class="cover-glow"></div>
+  <div class="cover-inner">
+    <img class="cover-logo" src="images/genai-protos-logo.png" alt="GenAI Protos">
+    <h1>Multi-Agent AI<br>Research Assistant</h1>
+    <p class="eyebrow">Proof of concept documentation</p>
+    <p class="subtitle">Four AI agents research a technical question and write a cited report. Every model call runs on a small local model, and plain code checks every fact before it reaches the report.</p>
+    <div class="accent-rule"></div>
+    <table class="meta">
+      <tr><td>Project</td><td>Research Agents (Multi-Agent AI Research Assistant)</td></tr>
+      <tr><td>Prepared by</td><td>Sahana Ganeshvel</td></tr>
+      <tr><td>Version</td><td>1.1 · 18 November 2026 (branded UI release)</td></tr>
+      <tr><td>Live demo</td><td><a href="https://research-agents-blush.vercel.app/">research-agents-blush.vercel.app</a> (replays a real run)</td></tr>
+      <tr><td>Source code</td><td><a href="https://github.com/SahanaGaneshvel/research-agent">github.com/SahanaGaneshvel/research-agent</a></td></tr>
+      <tr><td>Status</td><td>Working POC · 139 automated tests passing</td></tr>
+    </table>
+  </div>
+  <div class="cover-band">
+    <img src="images/genai-protos-logo-white.png" alt="GenAI Protos">
+    <span>Get started with AI. Experiment fast. Invest with clarity.</span>
+  </div>
+</div>
+
+<!-- ======================================================================= CONTENTS -->
+<section class="s">
+  <p class="eyebrow">Contents</p>
+  <h2 style="margin-top:0">What this document covers</h2>
+  <p>The document follows the team’s delivery template. Part A is the mandatory project document (sections 1 to 13). Part B is the additional model documentation, because the solution uses a language model. Part C lists the final deliverables and ends with a short summary for content development.</p>
+  <ul class="toc">
+    <li><span class="n">1</span>Project name and description</li>
+    <li><span class="n">2</span>Challenge being addressed</li>
+    <li><span class="n">3</span>Intended users and real-world context</li>
+    <li><span class="n">4</span>Objective, scope and success criteria</li>
+    <li><span class="n">5</span>Our approach and why it was selected</li>
+    <li><span class="n">6</span>Our solution and what was actually built</li>
+    <li><span class="n">7</span>Architecture diagram</li>
+    <li><span class="n">8</span>Technical information, tools and dependencies</li>
+    <li><span class="n">9</span>Test results and supporting evidence</li>
+    <li><span class="n">10</span>Benefits and outcomes</li>
+    <li><span class="n">11</span>Limitations and known issues</li>
+    <li><span class="n">12</span>Where and how the solution could be used</li>
+    <li><span class="n">13</span>Setup instructions and next steps</li>
+    <li><span class="n">B</span>Model documentation (Qwen3.5 on Ollama)</li>
+    <li><span class="n">C</span>Final deliverables and summary of findings</li>
+    <li><span class="n">D</span>Appendix: failure example and glossary</li>
+  </ul>
+
+  <div class="stats" style="margin-top:16pt">
+    <div class="stat"><b>4</b><span>agents in one LangGraph workflow</span></div>
+    <div class="stat"><b>0</b><span>paid APIs: the model runs locally on Ollama</span></div>
+    <div class="stat"><b>18 min</b><span>for a full run on a laptop CPU, no GPU</span></div>
+    <div class="stat"><b>139</b><span>offline automated tests, all passing</span></div>
+  </div>
+</section>
+
+<!-- ======================================================================= PART A -->
+<div class="part">
+  <div class="part-head">
+    <p class="eyebrow">Part A</p>
+    <h1>Mandatory project document</h1>
+    <p>Sections 1 to 13 of the team template.</p>
+  </div>
+
+  <section class="s">
+    <h2><span class="num">1</span>Project name and description</h2>
+    <p class="lead"><strong>Research Agents</strong> (full name: Multi-Agent AI Research Assistant) is a small AI research team that runs on a laptop. You give it a technical question, for example <em>“Research the latest open-source multimodal models suitable for on-premise deployment. Compare their capabilities, benchmarks, hardware requirements, licensing and limitations.”</em> Four specialised agents then search the web, Hugging Face model cards, arXiv papers and GitHub, compare the models they find, check the evidence, and write a structured 10-section technical report in which every source is a link that was actually opened.</p>
+    <p>The language model is <strong>Qwen3.5</strong>, served locally by <strong>Ollama</strong>; there are no paid APIs and no API keys. The agents are coordinated by <strong>LangGraph</strong>. The POC has two interfaces: a Streamlit app and a Next.js web app that shows every step of a run as a live flow diagram. For this version I moved both of them to the GenAI Protos brand.</p>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">2</span>Challenge being addressed</h2>
+    <ul>
+      <li><strong>Technical research on AI models is slow and scattered.</strong> The facts needed to choose a model (size, licence, hardware needs, benchmark scores, limitations) are spread across model cards, papers, repositories and blog posts, and they change every few weeks.</li>
+      <li><strong>Chat assistants make things up.</strong> Asked the same question, a language model will confidently produce model names, benchmark scores, licences and links that do not exist. For a client recommendation that is not acceptable.</li>
+      <li><strong>Cost and data privacy.</strong> Paid cloud APIs cost money per call and send the question to a third party. Many clients interested in on-premise AI want neither.</li>
+      <li><strong>Small local models are weak.</strong> A model small enough to run on a laptop CPU is far less reliable than a large cloud model, so the system around it has to compensate.</li>
+    </ul>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">3</span>Intended users and real-world context</h2>
+    <table class="t">
+      <thead><tr><th style="width:28%">User</th><th>Need</th></tr></thead>
+      <tr><td><strong>AI consultants and solution architects</strong> (for example at GenAI Protos)</td><td>A fast, cited first pass on which models or tools fit a client’s brief, before a deeper manual review.</td></tr>
+      <tr><td><strong>Technical leads evaluating on-premise AI</strong></td><td>A comparison of open models by licence, size and hardware needs, with clear separation of facts, estimates and opinions.</td></tr>
+      <tr><td><strong>Researchers and analysts</strong></td><td>A quick scan of recent papers, repositories and model cards on a topic, with the sources listed.</td></tr>
+    </table>
+    <p><strong>Context.</strong> The users work where cost, privacy and trust matter: they may not be allowed to send data to cloud APIs, they may only have ordinary laptops, and they must be able to trace every statement back to a source. I built and tested the POC on that kind of machine: a 4-core Intel i5-1155G7 laptop with 8 GB RAM and no GPU.</p>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">4</span>Objective, scope and success criteria</h2>
+    <p><strong>Objective.</strong> To show that a small team of cooperating agents on a free, local model can turn one question into a structured, cited technical report without inventing facts, and that the design is simple enough to explain and test.</p>
+    <div class="cards">
+      <div class="card"><p class="k">In scope</p><p>Four agents (Research, Comparison, Evaluation, Report); LangGraph orchestration; web, Hugging Face, arXiv and GitHub retrieval; local Qwen3.5 through Ollama; Pydantic-validated structured output; 10-section Markdown report; Streamlit UI; Next.js flow UI with FastAPI streaming; automated tests; GenAI Protos branding.</p></div>
+      <div class="card"><p class="k">Out of scope</p><p>Enterprise features (login, multiple users, database); running benchmarks; reading full PDFs; GPU deployment; cloud models of any kind. The brief asked for a small, explainable POC, not a platform.</p></div>
+    </div>
+    <table class="t">
+      <thead><tr><th style="width:44%">Success criterion</th><th style="width:14%">Result</th><th>Evidence</th></tr></thead>
+      <tr><td>Four specialised agents collaborate through an explicit LangGraph workflow</td><td><span class="tag ok">Met</span></td><td><code>orchestration/workflow.py</code>; execution-order tests</td></tr>
+      <tr><td>Only a local model through Ollama; no paid API, never a silent fallback</td><td><span class="tag ok">Met</span></td><td>Cloud models refused in code; 0 paid calls</td></tr>
+      <tr><td>Report has the 10 required sections and downloads as Markdown</td><td><span class="tag ok">Met</span></td><td>Example report; report tests check section order</td></tr>
+      <tr><td>Every reference is a source that was actually retrieved</td><td><span class="tag ok">Met</span></td><td>References built by code; 0 unknown citations in the example run</td></tr>
+      <tr><td>No fabricated benchmark values; never claims a benchmark was run</td><td><span class="tag ok">Met</span></td><td>Score kept only if found in its source; fixed disclaimer in every report</td></tr>
+      <tr><td>Open-weight models kept apart from OSI open-source licences</td><td><span class="tag ok">Met</span></td><td>Rule-based licence classification in code</td></tr>
+      <tr><td>Fails gracefully (Ollama down, no internet, no sources, bad model output)</td><td><span class="tag part-ok">Mostly met</span></td><td>Tests for each case. Gap found 18 Nov: a broken Ollama runtime passes the start-up check (section 11)</td></tr>
+      <tr><td>Runs on the available hardware (8 GB laptop, CPU only)</td><td><span class="tag ok">Met</span></td><td>With <code>qwen3.5:2b</code>; the 4B default ran out of memory</td></tr>
+      <tr><td>Automated tests</td><td><span class="tag ok">Met</span></td><td>139 offline tests passing</td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">5</span>Our approach and why it was selected</h2>
+    <p class="lead">I kept one rule throughout: <strong>the model does the language work, and code does anything that has to be exact.</strong></p>
+    <table class="t">
+      <thead><tr><th style="width:42%">Task</th><th style="width:14%">Done by</th><th>Why</th></tr></thead>
+      <tr><td>Choosing search terms, reading sources, filling table rows, writing prose</td><td>Model</td><td>Needs language understanding</td></tr>
+      <tr><td>Calling tools; URLs, titles, dates, citation IDs</td><td>Code</td><td>Must be exact; a 2 to 4B model is unreliable at tool calling</td></tr>
+      <tr><td>Which sources support each table row</td><td>Code</td><td>The model never chooses its own citations</td></tr>
+      <tr><td>Licence and parameter count; licence category</td><td>Code</td><td>From the Hugging Face and GitHub APIs and fixed rules</td></tr>
+      <tr><td>Benchmark verification and memory estimates</td><td>Code</td><td>Text matching and arithmetic, labelled as such</td></tr>
+      <tr><td>Tables, methodology, references</td><td>Code</td><td>Generated from structured state, always consistent</td></tr>
+    </table>
+    <h3>Alternatives considered</h3>
+    <table class="t">
+      <thead><tr><th style="width:26%">Alternative</th><th>Why it was not chosen</th></tr></thead>
+      <tr><td>One large prompt</td><td>I tried this first. Asked to build the whole comparison table in one go, the 2B model returned an <strong>empty table</strong>. Splitting the job into small steps fixed it.</td></tr>
+      <tr><td>Agent decides which tools to call (ReAct-style loop)</td><td>Small models are unreliable at multi-step tool calling, and a loop can run for a very long time on a CPU. A fixed plan run by code is predictable and easy to test. The model still chooses <em>what</em> to search for.</td></tr>
+      <tr><td>Paid cloud model (OpenAI, Anthropic, Gemini)</td><td>Ruled out by the brief because of cost, API keys and data leaving the machine.</td></tr>
+      <tr><td>Framework wrappers for the model client</td><td>I wrote a plain REST client of about 200 lines instead. It is easier to read and debug, and it has no version conflicts.</td></tr>
+      <tr><td>Running Comparison and Evaluation in parallel</td><td>Both only need Research’s output, but one model on one CPU queues requests anyway, so parallel runs would not be faster.</td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">6</span>Our solution and what was actually built</h2>
+    <h3>Key features</h3>
+    <div class="cards">
+      <div class="card"><h4>Four specialised agents</h4><p><strong>Research</strong> finds and reads sources; <strong>Comparison</strong> builds a model-by-model table; <strong>Evaluation</strong> checks benchmark scores and estimates memory; <strong>Report</strong> writes the 10-section report.</p></div>
+      <div class="card"><h4>Cites by ID only</h4><p>Sources are numbered S1 to Sn by code. The model may only write <code>[S3]</code>; code owns every URL, strips unknown IDs and builds the references.</p></div>
+      <div class="card"><h4>Verified benchmarks</h4><p>A score is kept only if that number and the benchmark name appear in the source it cites. Rejected scores are counted in the report.</p></div>
+      <div class="card"><h4>Honest failure</h4><p>No sources means no claims. Every fallback, failed step and removed sentence is labelled in the report and the UI.</p></div>
+      <div class="card"><h4>Runs locally</h4><p>Qwen3.5 through Ollama on a laptop CPU. No API keys, no cost per call, and nothing leaves the machine except the web searches.</p></div>
+      <div class="card"><h4>Branded interfaces</h4><p>A Streamlit app and a Next.js flow page, both in the GenAI Protos brand: logo, Google Sans, Primary Blue, navy and near-square cards.</p></div>
+    </div>
+
+    <h3>What was built</h3>
+    <table class="t">
+      <thead><tr><th style="width:30%">Component</th><th>What it does</th></tr></thead>
+      <tr><td><code>agents/</code></td><td>One file per agent, each with its own system prompt and code-side checks</td></tr>
+      <tr><td><code>orchestration/</code></td><td>LangGraph workflow, shared typed state with reducers, live progress events, command-line runner</td></tr>
+      <tr><td><code>services/</code></td><td>Ollama client (JSON-schema output, validation, retry, clear errors); web, Hugging Face, arXiv and GitHub search; page fetcher that respects robots.txt; file cache</td></tr>
+      <tr><td><code>schemas/</code>, <code>utils/</code></td><td>Pydantic models per agent; citation registry and audit; per-model evidence grouping</td></tr>
+      <tr><td><code>app.py</code> + <code>.streamlit/</code></td><td>Branded Streamlit app: question, depth, live agent cards, four results tabs, Markdown download</td></tr>
+      <tr><td><code>api/server.py</code></td><td>FastAPI server that runs the same workflow and streams each step as Server-Sent Events</td></tr>
+      <tr><td><code>web/</code></td><td>Branded Next.js page: question and depth, live run or replay of a recorded run, clickable flow diagram, report viewer</td></tr>
+      <tr><td><code>tests/</code></td><td>139 offline tests; the model and all network calls are replaced by fakes</td></tr>
+    </table>
+
+    <h3>What changed in this release (branding and UI)</h3>
+    <ul>
+      <li>I updated both interfaces to the GenAI Protos brand guidelines: logo in the header, white logo on a navy footer, Google Sans, Primary Blue <code>#1F5BF0</code> for actions and active states, Charcoal text, light-blue page background, 2 px corners, flat white cards with thin borders, Lucide outline icons, and the brand favicon.</li>
+      <li>I rebuilt the web page as a product page: a hero with the question card and a <strong>Basic / Detailed</strong> depth switch for live runs, a sticky replay bar, the flow diagram in a card, a step-details panel with a close button, a result card with citation numbers, and a “main idea” feature row.</li>
+      <li>I kept the accessibility work from the earlier version: keyboard focus rings in Primary Blue, readable contrast, reduced-motion support, and a list layout of the flow on phones and tablets.</li>
+    </ul>
+  </section>
+
+  <section class="s">
+    <h3 style="margin-top:0">Walkthrough: the web app</h3>
+    <figure>
+      <img src="images/web-01-landing.png" alt="Web app landing page">
+      <figcaption><b>Figure 1.</b> Landing page on a local machine with the API running. The header shows the GenAI Protos logo and that the local model is ready. The question card starts a live run; “Watch the recorded run” replays a real one.</figcaption>
+    </figure>
+    <figure>
+      <div class="crop" style="max-height:105mm"><img src="images/web-02-running.png" alt="A run in progress"></div>
+      <figcaption><b>Figure 2.</b> A run in progress. The four kinds of sources have been searched, Research is reading source 6 of 8 and the local model is busy. The panel below explains the current step in plain words.</figcaption>
+    </figure>
+  </section>
+
+  <section class="s">
+    <figure>
+      <div class="crop" style="max-height:112mm"><img src="images/web-03-research-details.png" alt="Research step details"></div>
+      <figcaption><b>Figure 3.</b> Clicking a step shows what it produced. For Research: every source that was read, whether it was kept, and the first facts taken from it.</figcaption>
+    </figure>
+  </section>
+
+  <section class="s">
+    <figure>
+      <div class="crop" style="max-height:104mm"><img src="images/web-04-compare-details.png" alt="Comparison step details"></div>
+      <figcaption><b>Figure 4.</b> The comparison: one row per model, with sizes and licences that come from the Hugging Face and GitHub APIs, and the key differences, each carrying the citations of the models it names.</figcaption>
+    </figure>
+    <figure>
+      <div class="crop" style="max-height:95mm"><img src="images/web-05-evaluate-details.png" alt="Evaluation step details"></div>
+      <figcaption><b>Figure 5.</b> The evaluation: how many benchmark scores were confirmed in their sources (none in this run, and the report says so) and the memory estimates at 4-bit, drawn on a log scale.</figcaption>
+    </figure>
+  </section>
+
+  <section class="s">
+    <figure>
+      <div class="crop" style="max-height:135mm"><img src="images/web-06-report.png" alt="The finished report"></div>
+      <figcaption><b>Figure 6.</b> The finished report, opened in the page: 8 sources cited, 0 unknown citations, 0 sentences removed. The first four of its ten sections are shown. It can be downloaded as Markdown.</figcaption>
+    </figure>
+  </section>
+
+  <section class="s">
+    <figure>
+      <div class="crop" style="max-height:90mm"><img src="images/web-07-features-footer.png" alt="Main idea section and footer"></div>
+      <figcaption><b>Figure 7.</b> The “main idea” cards and the branded navy footer with the white logo and the GenAI Protos tagline.</figcaption>
+    </figure>
+    <figure class="phone">
+      <img src="images/web-08-mobile.png" alt="Phone layout">
+      <figcaption style="text-align:center"><b>Figure 8.</b> The same page on a phone.</figcaption>
+    </figure>
+  </section>
+
+  <section class="s">
+    <h3 style="margin-top:0">Walkthrough: the Streamlit app</h3>
+    <figure>
+      <div class="crop" style="max-height:104mm"><img src="images/st-01-start.png" alt="Streamlit start page"></div>
+      <figcaption><b>Figure 9.</b> The branded Streamlit app: enter a question, pick Basic or Detailed, press Start Research. The four agent cards change from Pending to Running to Completed from real workflow events. Start is disabled when Ollama is not ready.</figcaption>
+    </figure>
+    <figure>
+      <div class="crop" style="max-height:96mm"><img src="images/st-04-model-comparison.png" alt="Streamlit comparison tab"></div>
+      <figcaption><b>Figure 10.</b> Results of the recorded example run (10 November 2026): every agent completed, 8 sources, 4 models compared, 1,073 s in total. The Model Comparison tab is shown; the other tabs are Research Findings, Evaluation and Final Report.</figcaption>
+    </figure>
+  </section>
+
+  <section class="s">
+    <figure>
+      <div class="crop" style="max-height:100mm"><img src="images/st-05-evaluation.png" alt="Streamlit evaluation tab"></div>
+      <figcaption><b>Figure 11.</b> The Evaluation tab: the disclaimer that no benchmarks were run by the app, verified scores (none could be verified in this run), on-premise suitability judged qualitatively, and memory estimates labelled as computed, not measured.</figcaption>
+    </figure>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">7</span>Architecture diagram</h2>
+    <figure>
+      <svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" font-family="'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif">
+  
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#2B2828"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1F5BF0"/>
+    </marker>
+  </defs>
+
+  <rect width="1700" height="980" fill="#F7FAFF"/>
+
+  
+  <text x="40" y="58" font-size="30" font-weight="700" fill="#2B2828">Multi-Agent AI Research Assistant: architecture</text>
+  <text x="40" y="90" font-size="17" fill="#605C5C">One fixed LangGraph pipeline. The local model does the language work; code calls the tools, owns the citations and checks every fact.</text>
+
+  
+  <text x="900" y="130" text-anchor="middle" font-size="13" font-weight="600" letter-spacing="2" fill="#605C5C">RETRIEVAL TOOLS (RUN BY CODE, NOT BY THE MODEL)</text>
+  <g font-size="16">
+    <rect x="368" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
+    <text x="468" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">Web search</text>
+    <text x="468" y="194" text-anchor="middle" font-size="13" fill="#605C5C">DuckDuckGo → Bing → Brave</text>
+
+    <rect x="584" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
+    <text x="684" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">Hugging Face Hub API</text>
+    <text x="684" y="194" text-anchor="middle" font-size="13" fill="#605C5C">model cards, licence, params</text>
+
+    <rect x="800" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
+    <text x="900" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">arXiv API</text>
+    <text x="900" y="194" text-anchor="middle" font-size="13" fill="#605C5C">paper abstracts</text>
+
+    <rect x="1016" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
+    <text x="1116" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">GitHub REST API</text>
+    <text x="1116" y="194" text-anchor="middle" font-size="13" fill="#605C5C">repos, README, licence</text>
+
+    <rect x="1232" y="144" width="200" height="66" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
+    <text x="1332" y="172" text-anchor="middle" font-weight="700" fill="#2B2828">Page fetcher</text>
+    <text x="1332" y="194" text-anchor="middle" font-size="13" fill="#605C5C">Requests + BeautifulSoup</text>
+  </g>
+  <text x="40" y="168" font-size="13" fill="#605C5C">JSON file cache (24 h; empty</text>
+  <text x="40" y="186" font-size="13" fill="#605C5C">results never cached) ·</text>
+  <text x="40" y="204" font-size="13" fill="#605C5C">robots.txt respected</text>
+
+  
+  <rect x="40" y="300" width="260" height="360" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
+  <text x="60" y="328" font-size="13" font-weight="600" letter-spacing="2" fill="#1F5BF0">INTERFACES</text>
+  <rect x="60" y="346" width="220" height="62" rx="2" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="170" y="372" text-anchor="middle" font-size="16" font-weight="700" fill="#2B2828">User</text>
+  <text x="170" y="394" text-anchor="middle" font-size="13" fill="#605C5C">asks a research question</text>
+  <path d="M170 408 V 428" stroke="#2B2828" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="60" y="432" width="220" height="62" rx="2" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="170" y="458" text-anchor="middle" font-size="16" font-weight="700" fill="#2B2828">Streamlit app</text>
+  <text x="170" y="480" text-anchor="middle" font-size="13" fill="#605C5C">app.py · live agent cards</text>
+  <text x="170" y="516" text-anchor="middle" font-size="13" fill="#605C5C">or</text>
+  <rect x="60" y="528" width="220" height="112" rx="2" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="170" y="556" text-anchor="middle" font-size="16" font-weight="700" fill="#2B2828">Next.js web app</text>
+  <text x="170" y="578" text-anchor="middle" font-size="13" fill="#605C5C">flow diagram · live or replay</text>
+  <text x="170" y="604" text-anchor="middle" font-size="13" fill="#605C5C">FastAPI · Server-Sent Events</text>
+  <text x="170" y="626" text-anchor="middle" font-size="13" fill="#605C5C">(api/server.py)</text>
+
+  
+  <rect x="340" y="300" width="1120" height="360" rx="2" fill="#FFFFFF" stroke="#C7DAFF" stroke-width="1.5"/>
+  <text x="360" y="328" font-size="13" font-weight="600" letter-spacing="2" fill="#1F5BF0">LANGGRAPH WORKFLOW</text>
+
+  
+  <g fill="none" stroke="#94A3B8" stroke-width="1.6">
+    <path d="M468 210 C468 290 670 270 670 346"/>
+    <path d="M684 210 C684 280 670 290 670 346"/>
+    <path d="M900 210 C900 290 670 270 670 346"/>
+    <path d="M1116 210 C1116 300 670 260 670 346"/>
+    <path d="M1332 210 C1332 310 670 250 670 346"/>
+  </g>
+  <path d="M663 336 L670 350 L677 336 Z" fill="#94A3B8"/>
+
+  
+  <path d="M300 480 H 322 V 402 H 366" fill="none" stroke="#2B2828" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+
+  
+  <rect x="370" y="352" width="170" height="100" rx="2" fill="#FFFFFF" stroke="#2B2828" stroke-width="1.6"/>
+  <text x="455" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#2B2828">Orchestrator</text>
+  <text x="455" y="410" text-anchor="middle" font-size="13" fill="#605C5C">validates the topic</text>
+  <text x="455" y="430" text-anchor="middle" font-size="13" fill="#605C5C">checks Ollama + model</text>
+
+  
+  <g>
+    <rect x="580" y="352" width="180" height="100" rx="2" fill="#0B1B29"/>
+    <text x="670" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Research Agent</text>
+    <text x="670" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">plans, retrieves, reads</text>
+    <text x="670" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">numbers sources S1…Sn</text>
+
+    <rect x="790" y="352" width="180" height="100" rx="2" fill="#0B1B29"/>
+    <text x="880" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Comparison Agent</text>
+    <text x="880" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">one table row per model</text>
+    <text x="880" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">licence category by code</text>
+
+    <rect x="1000" y="352" width="180" height="100" rx="2" fill="#0B1B29"/>
+    <text x="1090" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Evaluation Agent</text>
+    <text x="1090" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">verifies benchmark scores</text>
+    <text x="1090" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">memory estimates by code</text>
+
+    <rect x="1210" y="352" width="220" height="100" rx="2" fill="#0B1B29"/>
+    <text x="1320" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Report Agent</text>
+    <text x="1320" y="410" text-anchor="middle" font-size="13" fill="#CBD5E1">10-section Markdown report</text>
+    <text x="1320" y="430" text-anchor="middle" font-size="13" fill="#CBD5E1">references built by code</text>
+  </g>
+
+  
+  <g stroke="#2B2828" stroke-width="1.8" marker-end="url(#arrow)">
+    <path d="M540 402 H 576"/>
+    <path d="M760 402 H 786"/>
+    <path d="M970 402 H 996"/>
+    <path d="M1180 402 H 1206"/>
+  </g>
+
+  
+  <path d="M455 452 V 470" stroke="#605C5C" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <rect x="370" y="472" width="170" height="54" rx="2" fill="#FEF2F2" stroke="#FECACA"/>
+  <text x="455" y="494" text-anchor="middle" font-size="13" font-weight="600" fill="#B91C1C">can’t start → stop</text>
+  <text x="455" y="514" text-anchor="middle" font-size="13" fill="#605C5C">with a clear message</text>
+  <path d="M670 452 V 470" stroke="#605C5C" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <rect x="580" y="472" width="180" height="54" rx="2" fill="#FEF2F2" stroke="#FECACA"/>
+  <text x="670" y="494" text-anchor="middle" font-size="13" font-weight="600" fill="#B91C1C">0 sources → honest</text>
+  <text x="670" y="514" text-anchor="middle" font-size="13" fill="#605C5C">report, makes no claims</text>
+
+  
+  <g stroke="#1F5BF0" stroke-width="1.4" stroke-dasharray="3 4">
+    <path d="M455 526 V 552"/><path d="M670 526 V 552"/>
+    <path d="M880 452 V 552"/><path d="M1090 452 V 552"/><path d="M1320 452 V 552"/>
+  </g>
+  <rect x="370" y="552" width="1060" height="84" rx="2" fill="#E0ECFF" stroke="#C7DAFF"/>
+  <text x="390" y="582" font-size="16" font-weight="700" fill="#2B2828">Shared state (TypedDict)</text>
+  <text x="390" y="606" font-size="13" fill="#2B2828">topic · sources S1…Sn · findings · comparison · evaluation · report · events</text>
+  <text x="390" y="626" font-size="13" fill="#605C5C">Reducers merge agent status, timings and errors, so no agent overwrites another agent’s bookkeeping.</text>
+
+  
+  <path d="M1430 402 H 1496" fill="none" stroke="#2B2828" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <rect x="1500" y="352" width="170" height="100" rx="2" fill="#FFFFFF" stroke="#2B2828" stroke-width="1.6"/>
+  <text x="1585" y="386" text-anchor="middle" font-size="17" font-weight="700" fill="#2B2828">Outputs</text>
+  <text x="1585" y="410" text-anchor="middle" font-size="13" fill="#605C5C">report_&lt;time&gt;.md</text>
+  <text x="1585" y="430" text-anchor="middle" font-size="13" fill="#605C5C">run_&lt;time&gt;.json</text>
+
+  
+  <g stroke="#1F5BF0" stroke-width="1.6" stroke-dasharray="6 6">
+    <path d="M670 660 V 716"/><path d="M880 660 V 716"/><path d="M1090 660 V 716"/><path d="M1320 660 V 716"/>
+  </g>
+  <text x="1336" y="694" font-size="13" fill="#1F5BF0">every agent calls the same local model</text>
+  <rect x="580" y="720" width="850" height="96" rx="2" fill="#FFFFFF" stroke="#1F5BF0" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="1005" y="756" text-anchor="middle" font-size="18" font-weight="700" fill="#2B2828">Local model · Ollama · Qwen3.5 (4B by default, 2B on an 8 GB laptop)</text>
+  <text x="1005" y="784" text-anchor="middle" font-size="13" fill="#605C5C">Runs on the laptop, never online, no paid API · JSON-schema structured output + Pydantic validation · one bounded retry</text>
+  <text x="1005" y="804" text-anchor="middle" font-size="13" fill="#605C5C">Cloud models (*-cloud) are refused</text>
+
+  
+  <rect x="40" y="850" width="1630" height="94" rx="2" fill="#0B1B29"/>
+  <text x="64" y="882" font-size="13" font-weight="600" letter-spacing="2" fill="#60A5FA">CODE-SIDE GUARDS</text>
+  <text x="64" y="910" font-size="15" fill="#FFFFFF">Citation registry S1…Sn · unknown [S#] stripped · references built from retrieved URLs · benchmark score kept only if it appears in its source</text>
+  <text x="64" y="932" font-size="15" fill="#CBD5E1">Attribution check on prose · licence category by rules (open source vs open weights) · memory = params × bytes × 1.2 · labelled fallbacks</text>
+  <g font-size="13" fill="#605C5C">
+    <rect x="40" y="250" width="14" height="14" fill="#0B1B29"/><text x="62" y="262">Agent (uses the model)</text>
+    <rect x="226" y="250" width="14" height="14" fill="#FFFFFF" stroke="#2B2828"/><text x="248" y="262">Plain code</text>
+  </g>
+</svg>
+
+      <figcaption><b>Figure 12.</b> Architecture. Editable source: <code>docs/poc-document/architecture.svg</code> (plain SVG; opens in any browser, Figma, Inkscape or draw.io). A PNG copy is in <code>docs/poc-document/images/</code>.</figcaption>
+    </figure>
+    <ul>
+      <li><strong>Interfaces.</strong> The Streamlit app calls the workflow directly. The Next.js page talks to a FastAPI server, which runs the same workflow and streams each step as Server-Sent Events.</li>
+      <li><strong>Orchestrator.</strong> Checks that the question is valid (10 to 1,000 characters, real words) and that Ollama and the model are available, before any work starts.</li>
+      <li><strong>Fixed sequence, no loops.</strong> Research, Comparison, Evaluation, Report. The only branches: the run cannot start, or no sources were found.</li>
+      <li><strong>Shared state.</strong> A typed dictionary. Each agent returns only the keys it changed; reducers merge status, timings and errors.</li>
+      <li><strong>Retrieval is code.</strong> The model plans the search terms; code calls the APIs, fetches pages and registers sources as S1 to Sn.</li>
+      <li><strong>One local model.</strong> Every agent calls the same Qwen3.5 model through Ollama with a JSON schema, and the answer is validated with Pydantic, with one bounded retry.</li>
+    </ul>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">8</span>Related technical information, tools and dependencies</h2>
+    <table class="t">
+      <thead><tr><th style="width:24%">Area</th><th style="width:30%">Tool (version used)</th><th>Role</th></tr></thead>
+      <tr><td>Language</td><td>Python 3.12.9 (3.11+ supported)</td><td>Backend, agents, tests</td></tr>
+      <tr><td>Orchestration</td><td>LangGraph 1.2.20</td><td>StateGraph workflow, reducers, live event stream</td></tr>
+      <tr><td>Local model runtime</td><td>Ollama 0.40.x</td><td>Serves Qwen3.5 on <code>localhost:11434</code></td></tr>
+      <tr><td>Model</td><td>Qwen3.5 (<code>qwen3.5:2b</code> used; <code>qwen3.5:4b</code> default)</td><td>Planning, reading, row filling, writing (Part B)</td></tr>
+      <tr><td>Validation</td><td>Pydantic 2.14.3</td><td>Schemas for every model answer and agent output</td></tr>
+      <tr><td>Retrieval</td><td>ddgs 9.16.1; Requests 2.34.2; BeautifulSoup 4.15.0</td><td>Web search with engine fallback; HTTP; HTML to text</td></tr>
+      <tr><td>External APIs</td><td>Hugging Face Hub API, arXiv Atom API, GitHub REST API</td><td>Model cards with licence and parameter count; papers; repositories (optional <code>GITHUB_TOKEN</code>)</td></tr>
+      <tr><td>Interface 1</td><td>Streamlit 1.67.0, pandas 3.1.1</td><td>Branded app with live agent cards and result tabs</td></tr>
+      <tr><td>Interface 2</td><td>Next.js 16.4.5, React 19.3.0, Tailwind CSS 4.3.5, Motion 14.11, lucide-react 1.70, react-markdown 10.1</td><td>Branded flow page (Node.js 20+; 22.14 used)</td></tr>
+      <tr><td>API</td><td>FastAPI 0.162.2, Uvicorn 0.54.0</td><td>Streams the workflow to the web page</td></tr>
+      <tr><td>Tests</td><td>pytest 9.2.0</td><td>139 offline tests</td></tr>
+      <tr><td>Hosting (demo)</td><td>Vercel</td><td>Static replay site; redeploys on every push</td></tr>
+    </table>
+    <h3>Configuration (<code>.env</code>)</h3>
+    <table class="t">
+      <thead><tr><th style="width:30%">Variable</th><th style="width:22%">Default</th><th>Meaning</th></tr></thead>
+      <tr><td><code>OLLAMA_MODEL</code></td><td><code>qwen3.5:4b</code></td><td>Which local model to use (<code>qwen3.5:2b</code> on machines with 3 to 6 GB free RAM)</td></tr>
+      <tr><td><code>OLLAMA_HOST</code></td><td><code>http://localhost:11434</code></td><td>Where Ollama runs</td></tr>
+      <tr><td><code>OLLAMA_TEMPERATURE</code></td><td>0.1</td><td>Low, for factual work</td></tr>
+      <tr><td><code>OLLAMA_NUM_CTX</code></td><td>8192</td><td>Context window sent to Ollama (tokens)</td></tr>
+      <tr><td><code>OLLAMA_TIMEOUT</code></td><td>600</td><td>Seconds to wait for one model answer</td></tr>
+      <tr><td><code>GITHUB_TOKEN</code></td><td>empty</td><td>Optional; raises the GitHub search rate limit. Never logged</td></tr>
+      <tr><td><code>CACHE_TTL_HOURS</code></td><td>24</td><td>Retrieval cache lifetime; empty results are never cached</td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">9</span>Test results and supporting evidence</h2>
+    <h3>Automated tests: 139 passed</h3>
+    <p>All tests run offline in about 6 to 10 seconds: Ollama and every network call are replaced by fakes, so results are repeatable. The full list is in <code>docs/test_results.txt</code>.</p>
+    <table class="t">
+      <thead><tr><th style="width:30%">Test file</th><th style="width:8%">Tests</th><th>What it proves</th></tr></thead>
+      <tr><td><code>test_schemas.py</code></td><td>22</td><td>Validation of every structured answer, URL checks, placeholder values</td></tr>
+      <tr><td><code>test_comparison_agent.py</code></td><td>18</td><td>Invented model names ignored, per-model evidence, citations set by code, API metadata, failed steps reported</td></tr>
+      <tr><td><code>test_retrieval.py</code></td><td>16</td><td>arXiv, GitHub, Hugging Face and web parsing; rate limits; offline; robots.txt; search-engine fallback</td></tr>
+      <tr><td><code>test_ollama_client.py</code></td><td>15</td><td>Structured output, malformed output and retry, missing model, server down, out of memory, cloud models refused</td></tr>
+      <tr><td><code>test_research_agent.py</code></td><td>15</td><td>One failed tool does not stop research, de-duplication, query relaxation, honest extraction fallback</td></tr>
+      <tr><td><code>test_citations.py</code></td><td>14</td><td>Citation consistency, unknown IDs stripped, licence classification</td></tr>
+      <tr><td><code>test_report_agent.py</code></td><td>12</td><td>10 sections in order, references are real URLs, misattributed sentences removed, fallback report</td></tr>
+      <tr><td><code>test_workflow.py</code></td><td>9</td><td>Execution order, shared-state merging, live events, abort paths, one failing agent does not stop the rest</td></tr>
+      <tr><td><code>test_evaluation_agent.py</code></td><td>6</td><td>Fabricated benchmark numbers rejected, unsupported assessments downgraded</td></tr>
+      <tr><td><code>test_api.py</code></td><td>6</td><td>API health, event stream order, crash reported as an event, one run at a time</td></tr>
+      <tr><td><code>test_app.py</code>, <code>test_cache.py</code></td><td>3 + 3</td><td>Branded Streamlit page renders, Start disabled when Ollama is down, full results render; cache expiry</td></tr>
+    </table>
+
+    <h3>Recorded example run (real model, real internet)</h3>
+    <p>Question: the on-premise multimodal models example above. Depth Basic, model <code>qwen3.5:2b</code>, i5-1155G7 laptop, 8 GB RAM, CPU only, 10 November 2026.</p>
+    <table class="t">
+      <thead><tr><th style="width:18%">Agent</th><th style="width:12%">Time</th><th>Output</th></tr></thead>
+      <tr><td>Research</td><td>519 s</td><td>8 sources (2 web, 2 Hugging Face model cards, 2 arXiv, 2 GitHub); all 8 judged relevant</td></tr>
+      <tr><td>Comparison</td><td>199 s</td><td>4 models compared: Kimi K3.1-Pro, Qwen3.8-27B, ShowUI, open-pi-zero</td></tr>
+      <tr><td>Evaluation</td><td>175 s</td><td>0 verified benchmarks (none in the retrieved text); 2 memory estimates</td></tr>
+      <tr><td>Report</td><td>176 s</td><td>10 sections; 8 sources cited; 0 unknown citations; 0 sentences removed</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong>1,073 s</strong></td><td>0 errors. Full record: <code>outputs/example_run.json</code></td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h3 style="margin-top:0">Failure examples, and what was done about them</h3>
+    <p>The unit tests with a fake model passed from the start. The problems only showed up when I ran the whole thing nine times with the real model and the real internet. Every fix below has a regression test named after the failure.</p>
+    <table class="t">
+      <thead><tr><th style="width:8%">Run</th><th style="width:44%">What went wrong</th><th>Fix</th></tr></thead>
+      <tr><td>1</td><td>The model wrote queries like <code>[multimodal model] [on-premise]</code>; GitHub returned nothing; arXiv matched “premise-induced hallucination”; 0 findings yet a normal-looking report</td><td>Query cleaning, generic-word removal, one bounded relaxation, and a dedicated “insufficient evidence” report</td></tr>
+      <tr><td>2</td><td>Good articles judged irrelevant because the model only saw page menus; model-card search returned GPT-2</td><td>Best-passage selection by code; task guard for multimodal topics</td></tr>
+      <tr><td>3</td><td>Empty comparison table from one big prompt</td><td>Comparison split into select, evidence, one row per model, differences</td></tr>
+      <tr><td>4 to 5</td><td>A failed step went unnoticed; empty “no results” cached for 24 h; only one search engine answered</td><td>Warnings surfaced; empty results never cached; fixed engine fallback chain</td></tr>
+      <tr><td>6</td><td>“Kimi K3” inherited Kimi K3.1-Pro’s 2.78 trillion parameters</td><td>Version-aware name matching</td></tr>
+      <tr><td>7</td><td>Architecture parts picked as models; a price in the licence column; a capability credited to the wrong model</td><td>Models with their own card always compared; licence sanity check; attribution check on prose</td></tr>
+      <tr><td>8</td><td>The attribution check removed a correct sentence</td><td>Strict matching for versioned names, whole-word matching for descriptive names</td></tr>
+    </table>
+    <h3>Flaws I left in the example report on purpose</h3>
+    <ul>
+      <li>A narrative sentence calls Kimi K3.1-Pro “27.8 trillion parameters”: the 2B model’s arithmetic (2,780B is 2.78 trillion). The table and memory estimate, which come from code, are correct.</li>
+      <li>One context-window cell says “Block-wise causal masking”: an architecture detail in the wrong column. Code rejects non-answers and prices, but not every misplaced fact.</li>
+    </ul>
+    <div class="callout warn">
+      <p><strong>A new failure I found on 18 November 2026 while preparing this document.</strong> An automatic Ollama update on 11 November removed Ollama’s inference engine and never put it back. Ollama still starts and lists the model, so the app’s start-up check passed, but every model call failed. The app did what it was designed to do. It used the fallback plan, marked Evaluation as Failed, showed the warnings and invented nothing. The run ended after 50 s with 0 models compared. Screenshot and details: Appendix D. The fix is to reinstall Ollama, and section 13 lists the code change I plan to make.</p>
+    </div>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">10</span>Benefits and outcomes</h2>
+    <h3>Measured results</h3>
+    <table class="t">
+      <thead><tr><th style="width:42%">Outcome</th><th style="width:12%"></th><th>Measurement</th></tr></thead>
+      <tr><td>Report produced end to end on a laptop CPU</td><td><span class="tag ok">Measured</span></td><td>1,073 s for 8 sources and 4 models (example run)</td></tr>
+      <tr><td>References are real</td><td><span class="tag ok">Measured</span></td><td>8 of 8 references were retrieved URLs; 0 unknown citations</td></tr>
+      <tr><td>Running cost</td><td><span class="tag ok">Measured</span></td><td>0 paid API calls; no API keys</td></tr>
+      <tr><td>Hardware needed</td><td><span class="tag ok">Measured</span></td><td>Runs in 8 GB RAM with <code>qwen3.5:2b</code> (2.7 GB on disk); the 4B model did not fit</td></tr>
+      <tr><td>Reliability of the code</td><td><span class="tag ok">Measured</span></td><td>139 of 139 tests pass; 8 live failures fixed with regression tests</td></tr>
+    </table>
+    <h3>Expected benefits (not measured)</h3>
+    <table class="t">
+      <thead><tr><th style="width:42%">Expected benefit</th><th style="width:12%"></th><th>Reasoning</th></tr></thead>
+      <tr><td>Faster first-pass research for consultants</td><td><span class="tag exp">Expected</span></td><td>A cited draft in about 18 unattended minutes instead of manual searching. Time saved was not measured against a person.</td></tr>
+      <tr><td>Lower risk of invented facts in client material</td><td><span class="tag exp">Expected</span></td><td>Citations, references, licences and numbers are controlled by code. Accuracy against known answers is not yet measured.</td></tr>
+      <tr><td>Better narrative quality with a larger model</td><td><span class="tag exp">Expected</span></td><td>Only <code>OLLAMA_MODEL</code> changes; most observed errors are small-model reasoning errors.</td></tr>
+      <tr><td>Much faster runs on a GPU</td><td><span class="tag exp">Expected</span></td><td>Almost all run time is model inference on the CPU.</td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">11</span>Limitations and known issues</h2>
+    <table class="t">
+      <thead><tr><th style="width:30%">Limitation</th><th>Details</th></tr></thead>
+      <tr><td>Small-model reasoning</td><td>The 2B model is fine at pulling out facts but poor at reasoning about them (for example “27.8 trillion”). Code owns citations, numbers, licences and tables, but narrative sentences can still contain reasoning errors. Critical statements should be checked in the cited source.</td></tr>
+      <tr><td>Start-up check is shallow <span class="tag no">Found 18 Nov</span></td><td>The health check confirms that Ollama runs and the model is downloaded, not that it can generate. A broken runtime is only noticed at the first model call.</td></tr>
+      <tr><td>Results vary between runs</td><td>Search engines return different pages, so two runs of the same question can give different tables.</td></tr>
+      <tr><td>Free web search is fragile</td><td>Free engines often refuse automated clients. The tool tries several in turn and records which answered; if all fail, research continues with the other sources.</td></tr>
+      <tr><td>Narrow checks</td><td>The attribution check confirms that a cited source mentions the model a sentence names, not every claim in it. Benchmark verification is textual: number and name appear in the source, not necessarily together.</td></tr>
+      <tr><td>Thin benchmark evidence</td><td>Model cards often put scores in images or long tables that the passages read do not reach, so runs often report that no score could be verified.</td></tr>
+      <tr><td>Shallow retrieval by design</td><td>About 2 to 4 sources per category; arXiv abstracts only (no PDF parsing); pages that need JavaScript give little text.</td></tr>
+      <tr><td>Rule-based licence categories</td><td>Conservative: unusual licence names (for example Hugging Face’s <code>other</code>) become “Unknown” rather than guessed.</td></tr>
+      <tr><td>Memory estimates are arithmetic</td><td>Weights only, no KV cache and no separately loaded vision encoder; labelled as estimates.</td></tr>
+      <tr><td>Speed</td><td>A Basic run takes about 10 to 18 minutes on a 4-core laptop CPU with the 2B model.</td></tr>
+      <tr><td>Demo site replays only</td><td>The hosted page replays a recorded run. Live runs need Ollama and the API on the same machine; one run at a time.</td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">12</span>Where and how the solution could be used</h2>
+    <div class="cards three">
+      <div class="card"><p class="k">Pre-sales</p><h4>Technology scouting</h4><p>A consultant runs the client’s question before a workshop and brings a cited first comparison, then deepens it by hand.</p></div>
+      <div class="card"><p class="k">On-premise</p><h4>Private research assistant</h4><p>Deployed on a client’s own server or GPU workstation, so questions never leave the network; web search can be swapped for internal sources.</p></div>
+      <div class="card"><p class="k">Internal R&amp;D</p><h4>Keeping up with models</h4><p>Scheduled runs on recurring questions (“new open vision models this month”) to keep an R&amp;D tracker current.</p></div>
+    </div>
+    <p><strong>How it would be deployed.</strong> On a laptop for individual use, as it runs today; on an on-premise server with a GPU and a larger model for a team, with the FastAPI server behind the company network and the web page as the front end. Moving to a GPU and a bigger model only needs <code>OLLAMA_MODEL</code> to change.</p>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">13</span>Setup instructions and recommended next steps</h2>
+    <h3>Setup (Windows, macOS, Linux)</h3>
+    <p>Requirements: Python 3.11+, <a href="https://ollama.com/download">Ollama</a>, internet access for retrieval; Node.js 20+ for the web page.</p>
+<pre>cd multi-agent-research-assistant
+python -m venv .venv
+.venv\Scripts\activate                 # macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+ollama pull qwen3.5:4b                 # or qwen3.5:2b with 3 to 6 GB free RAM
+copy .env.example .env                 # macOS/Linux: cp .env.example .env</pre>
+    <h3>Run</h3>
+<pre># Streamlit app
+streamlit run app.py                                   # http://localhost:8501
+
+# Branded web page with live runs: two terminals
+python -m uvicorn api.server:app --port 8000
+cd web &amp;&amp; npm install &amp;&amp; npm run build &amp;&amp; npx next start -p 3000   # http://localhost:3000
+
+# Command line, and the tests
+python -m orchestration.workflow "your question" basic
+python -m pytest</pre>
+    <div class="callout">
+      <p><strong>Troubleshooting.</strong> If runs end within a minute with “llama-server binary not found” in the warnings, the Ollama installation is incomplete (see Appendix D). Reinstall Ollama from ollama.com or with <code>winget install --id Ollama.Ollama -e --force</code>; downloaded models are kept. If memory is too low, the app suggests a smaller model.</p>
+    </div>
+    <h3>Recommended next steps</h3>
+    <ol>
+      <li><strong>Deeper start-up check:</strong> one tiny generation before a run, so a broken runtime is caught before research starts.</li>
+      <li><strong>Larger model on a GPU</strong> (4B to 8B): better reasoning and narrative, much faster runs, with no pipeline changes.</li>
+      <li><strong>An accuracy test set:</strong> a few questions with known answers to measure how many facts the system gets right, alongside the existing tests.</li>
+      <li><strong>Read benchmark tables</strong> from model-card Markdown, and parse arXiv PDFs, so more scores can be verified.</li>
+      <li><strong>Claim-level checks:</strong> embedding-based passage selection and verification of each narrative sentence against its source.</li>
+      <li><strong>Save and compare runs</strong> in SQLite, so reports on the same question can be compared over time.</li>
+      <li><strong>For a team pilot:</strong> sign-in, a run queue and deployment on an on-premise GPU server.</li>
+    </ol>
+  </section>
+</div>
+
+<!-- ======================================================================= PART B -->
+<div class="part">
+  <div class="part-head">
+    <p class="eyebrow">Part B</p>
+    <h1>Model documentation</h1>
+    <p>Required because the solution uses a language model.</p>
+  </div>
+
+  <section class="s">
+    <h2><span class="num">B1</span>What the model is and its exact version</h2>
+    <p><strong>Qwen3.5</strong> is a family of open-weight language models from Alibaba’s Qwen team. The small members ship with a vision encoder, so they can read images as well as text. The project runs it through <strong>Ollama</strong>, which downloads quantised model files and serves them on the local machine.</p>
+    <table class="t">
+      <thead><tr><th style="width:34%">Property</th><th>Value (from <code>ollama show qwen3.5:2b</code>)</th></tr></thead>
+      <tr><td>Model used in all recorded runs</td><td><code>qwen3.5:2b</code> · Ollama ID <code>0689d44085e0</code> · 2.7 GB on disk</td></tr>
+      <tr><td>Configured default</td><td><code>qwen3.5:4b</code> (as required by the brief; about 3.3 GB download)</td></tr>
+      <tr><td>Architecture · parameters</td><td><code>qwen35</code> · 1.9B, plus a 331M-parameter vision projector (CLIP)</td></tr>
+      <tr><td>Quantisation</td><td>Q8_0 (8-bit)</td></tr>
+      <tr><td>Context length (model)</td><td>262,144 tokens; the app uses 8,192 to save memory</td></tr>
+      <tr><td>Capabilities reported by Ollama</td><td>completion, vision, tools, thinking (thinking is switched off by the app)</td></tr>
+      <tr><td>Licence</td><td>Apache License 2.0</td></tr>
+      <tr><td>Runtime</td><td>Ollama 0.40.x on Windows 11, CPU only</td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">B2</span>Relevant industry use cases</h2>
+    <p>Small open-weight models like this are mostly used where data has to stay on site or costs have to stay low, for example extracting structured data from documents, summarising and classifying text, drafting answers from approved sources, offline assistants on laptops and edge devices, and single steps inside larger pipelines where code checks the output. This POC uses it in that last way.</p>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">B3</span>Key capabilities and limitations</h2>
+    <div class="cards">
+      <div class="card"><p class="k">Observed strengths</p><p>Follows a JSON schema reliably through Ollama’s structured output; extracts facts from a passage well; produces usable search terms; writes readable summaries; runs on a CPU in 8 GB RAM.</p></div>
+      <div class="card"><p class="k">Observed limitations</p><p>Weak arithmetic and comparison (“27.8 trillion”, “160K is larger than 1M”); sometimes puts a fact in the wrong field; fails at large multi-part tasks (empty table); slow on a CPU (about 18 minutes per run).</p></div>
+    </div>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">B4</span>Why it was selected for this project</h2>
+    <ul>
+      <li>The brief specified Qwen3.5 4B as the default local model, configurable through <code>OLLAMA_MODEL</code>.</li>
+      <li>It is open-weight under Apache 2.0, free to run, and needs no API key.</li>
+      <li>The 2B variant fits the development laptop: the 4B model needs about 4.5 GB of free memory and failed to load with an out-of-memory error on 8 GB with other applications open.</li>
+      <li>Ollama’s JSON-schema output, plus Pydantic validation, makes even a small model usable as a component.</li>
+    </ul>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">B5</span>Why is this model a better fit? Comparison with reasonable alternatives</h2>
+    <p>Other models could do this task too. What matters is which one fits this project best: local, free, CPU only, 8 GB of RAM and dependable structured output. I only ran the two Qwen3.5 sizes; the other rows were not tested here.</p>
+    <table class="t">
+      <thead><tr><th style="width:22%">Option</th><th style="width:18%">Licence</th><th style="width:22%">Tested here</th><th>Fit for this project</th></tr></thead>
+      <tr><td><strong>Qwen3.5 2B</strong> (used)</td><td>Apache 2.0</td><td>Yes: 10+ full runs</td><td>Fits 8 GB; reliable JSON; weak reasoning, contained by code checks</td></tr>
+      <tr><td>Qwen3.5 4B (default)</td><td>Apache 2.0</td><td>Yes: did not load (out of memory)</td><td>Better reasoning expected; needs about 4.5 GB free memory</td></tr>
+      <tr><td>Llama 3.2 3B</td><td>Llama Community Licence (custom)</td><td>No</td><td>Similar size; custom licence terms to review for commercial use</td></tr>
+      <tr><td>Gemma 3 4B</td><td>Gemma Terms of Use (custom)</td><td>No</td><td>Similar size; custom terms; would need its own memory test</td></tr>
+      <tr><td>Phi-4-mini</td><td>MIT</td><td>No</td><td>Permissive licence; would need testing for JSON reliability on this pipeline</td></tr>
+      <tr><td>Mistral 7B</td><td>Apache 2.0</td><td>No</td><td>Larger; unlikely to fit beside other apps in 8 GB on CPU</td></tr>
+      <tr><td>Paid cloud models</td><td>Commercial</td><td>No (excluded)</td><td>Much stronger, but cost per call, data leaves the machine, API keys: ruled out by the brief</td></tr>
+    </table>
+    <p><strong>Why Qwen3.5 is the better fit here.</strong> The brief asked for it, its Apache 2.0 licence is permissive, the 2B size runs on the hardware I had, and it returned valid structured output in every recorded run. The model is a single setting, so any of the alternatives can be tried later without changing code.</p>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">B6</span>Evidence supporting the claimed advantages</h2>
+    <table class="t">
+      <thead><tr><th style="width:36%">Claim</th><th>Evidence</th></tr></thead>
+      <tr><td>Runs on an 8 GB laptop, CPU only</td><td>Example run completed in 1,073 s with 0 errors (<code>outputs/example_run.json</code>)</td></tr>
+      <tr><td>The 4B default does not fit this laptop</td><td>Out-of-memory error when loading <code>qwen3.5:4b</code> (development log, README section 4)</td></tr>
+      <tr><td>Structured output is dependable</td><td>Every model answer is validated against a Pydantic schema; malformed answers are retried once and otherwise fall back with a label (tests in <code>test_ollama_client.py</code>)</td></tr>
+      <tr><td>Licence is permissive</td><td>Apache License 2.0, reported by <code>ollama show</code></td></tr>
+      <tr><td>Nothing is fabricated in references</td><td>0 unknown citations; references generated by code from retrieved sources</td></tr>
+    </table>
+    <p class="small muted">I do not claim any benchmark scores for the model itself, because I did not run any.</p>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">B7</span>Infrastructure, deployment and cost requirements</h2>
+    <table class="t">
+      <thead><tr><th style="width:26%">Setting</th><th style="width:37%">Laptop (as built)</th><th>Team pilot (suggested)</th></tr></thead>
+      <tr><td>Hardware</td><td>4-core CPU, 8 GB RAM, no GPU</td><td>Server or workstation with one GPU (for example 24 GB)</td></tr>
+      <tr><td>Model</td><td><code>qwen3.5:2b</code> (2.7 GB)</td><td><code>qwen3.5:4b</code> or larger</td></tr>
+      <tr><td>Software</td><td>Ollama, Python 3.11+, Node.js 20+ for the web page</td><td>Same, plus a reverse proxy and sign-in</td></tr>
+      <tr><td>Run time</td><td>About 10 to 18 minutes per Basic run</td><td>Expected to be much shorter on a GPU (not measured)</td></tr>
+      <tr><td>Network</td><td>Internet for web, Hugging Face, arXiv and GitHub; the model itself is offline</td><td>Same; web search could be swapped for internal sources</td></tr>
+      <tr><td>Cost</td><td>No licence or per-call fees; electricity only</td><td>Hardware cost only; no per-call fees</td></tr>
+      <tr><td>Demo hosting</td><td>Static replay page on Vercel</td><td>Internal hosting of the web page and API</td></tr>
+    </table>
+  </section>
+
+  <section class="s">
+    <h2><span class="num">B8</span>Application ideas</h2>
+    <table class="t">
+      <thead><tr><th style="width:20%">Idea</th><th style="width:27%">Target user and problem</th><th style="width:27%">How the model would help</th><th>Data or integrations required</th></tr></thead>
+      <tr><td><strong>1. Client model-selection brief</strong></td><td>Consultants preparing recommendations spend hours gathering model facts, and must not show clients invented numbers</td><td>Runs the pipeline on the client’s requirements and drafts a cited comparison with licences, sizes and memory estimates</td><td>Existing web, Hugging Face, arXiv and GitHub tools; a client requirements template; export to the team’s document format</td></tr>
+      <tr><td><strong>2. On-premise policy and compliance research</strong></td><td>Staff in regulated firms (banking, healthcare) need answers from internal policies without sending data to the cloud</td><td>The same agents, reading internal documents instead of the web, write cited summaries on site</td><td>Connectors to internal repositories (for example SharePoint or Confluence); internal search instead of web search; access control</td></tr>
+      <tr><td><strong>3. Open-source licence and risk check</strong></td><td>Engineering and procurement teams must check the licences and restrictions of the models and libraries they adopt</td><td>Extracts licence terms and restrictions; code classifies open source vs open weights and flags custom terms</td><td>A list of dependencies (for example an SBOM); Hugging Face and GitHub metadata; the existing licence rules, extended</td></tr>
+    </table>
+  </section>
+</div>
+
+<!-- ======================================================================= PART C -->
+<div class="part">
+  <div class="part-head">
+    <p class="eyebrow">Part C</p>
+    <h1>Final deliverables</h1>
+    <p>Checklist from the team template, with where each item is.</p>
+  </div>
+  <table class="t">
+    <thead><tr><th style="width:32%">Deliverable</th><th style="width:12%">Status</th><th>Where</th></tr></thead>
+    <tr><td>Working code, experiment or assessment</td><td><span class="tag ok">Done</span></td><td>GitHub repository; branded Streamlit app and web page</td></tr>
+    <tr><td>Completed project document</td><td><span class="tag ok">Done</span></td><td>This document: <code>docs/poc-document/POC_Document.pdf</code> (source: <code>POC_Document.html</code>)</td></tr>
+    <tr><td>Architecture diagram and editable source</td><td><span class="tag ok">Done</span></td><td>Section 7; <code>docs/poc-document/architecture.svg</code> and <code>images/architecture.png</code></td></tr>
+    <tr><td>Test results and failure examples</td><td><span class="tag ok">Done</span></td><td>Section 9; Appendix D; <code>docs/test_results.txt</code></td></tr>
+    <tr><td>Setup and execution instructions</td><td><span class="tag ok">Done</span></td><td>Section 13; project README</td></tr>
+    <tr><td>Demo or walkthrough</td><td><span class="tag ok">Done</span></td><td>Live replay: research-agents-blush.vercel.app; walkthrough in section 6</td></tr>
+    <tr><td>Model documentation</td><td><span class="tag ok">Done</span></td><td>Part B</td></tr>
+    <tr><td>Known limitations and recommendations</td><td><span class="tag ok">Done</span></td><td>Sections 11 and 13</td></tr>
+    <tr><td>Short summary of findings for content development</td><td><span class="tag ok">Done</span></td><td>Below</td></tr>
+  </table>
+
+  <section class="s">
+    <h2><span class="num">C1</span>Summary of findings for content development</h2>
+    <div class="callout">
+      <p><strong>Suggested headline:</strong> “A small local model can write a trustworthy research report, if code checks every fact.”</p>
+      <p>We built an AI research team of four agents that runs on an ordinary laptop, with no GPU, no cloud API and no cost per question. Given a question such as “which open multimodal models can we run on-premise?”, it searches the web, Hugging Face, arXiv and GitHub, compares the models it finds and writes a 10-section report in about 18 minutes. The main lesson was that small models are good at reading and writing but unreliable with facts and arithmetic. So the model is only allowed to cite sources by number, and plain code owns every link, licence, parameter count and benchmark check. In our recorded run, every one of the 8 references was a real, retrieved page, and the report openly said when evidence was missing instead of inventing it.</p>
+      <ul>
+        <li>Four agents, one local model, zero paid APIs.</li>
+        <li>The model writes; code checks citations, numbers and licences.</li>
+        <li>Testing with the real model exposed failures the unit tests never could, from an empty table to a price in the licence column, and each one became a fix.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================================= APPENDIX -->
+<div class="part">
+  <div class="part-head">
+    <p class="eyebrow">Appendix D</p>
+    <h1>Failure example and glossary</h1>
+    <p>A real run with a broken model runtime, 18 November 2026.</p>
+  </div>
+  <figure>
+    <div class="crop" style="max-height:140mm"><img src="images/fail-01-results.png" alt="Run with a broken Ollama runtime"></div>
+    <figcaption><b>Figure 13.</b> The same question, run on 18 November after Ollama’s automatic update had removed its inference engine. Web retrieval still found 8 real sources, but every model call failed. The search plan fell back to keywords, extraction fell back to the original snippets (labelled), Comparison found 0 models, Evaluation is marked <b>Failed</b>, and the warnings are shown. Total time 50 s, and nothing was invented.</figcaption>
+  </figure>
+  <p><strong>Root cause.</strong> Ollama’s upgrade log shows that the 11 November update ran the uninstaller, which deleted the <code>lib\ollama</code> folder containing the inference engine, but the new version was not fully installed. The server still starts and lists models, so the app’s start-up check passed.</p>
+  <p><strong>What it shows.</strong> One broken dependency made the report weaker, not wrong, which is how I wanted failures to behave. It also showed a gap: the start-up check should run one tiny generation first. That is now the first item in my next steps.</p>
+
+  <h3>Glossary</h3>
+  <table class="t">
+    <thead><tr><th style="width:24%">Term</th><th>Meaning</th></tr></thead>
+    <tr><td>Agent</td><td>A step with one job, which uses the language model for part of it (here: Research, Comparison, Evaluation, Report)</td></tr>
+    <tr><td>LangGraph</td><td>A library that connects agents as a graph of steps with a shared state</td></tr>
+    <tr><td>Ollama</td><td>A free program that downloads and runs language models on your own computer</td></tr>
+    <tr><td>Open weights vs open source</td><td>Open weights: the model can be downloaded, possibly under custom terms. Open source: an OSI-approved licence such as Apache 2.0 or MIT</td></tr>
+    <tr><td>Quantisation</td><td>Storing model weights with fewer bits (for example 8-bit or 4-bit) to use less memory</td></tr>
+    <tr><td>Context window</td><td>How much text the model can read at once, measured in tokens</td></tr>
+    <tr><td>Hallucination</td><td>A confident statement by a model that is not supported by any source</td></tr>
+    <tr><td>Server-Sent Events</td><td>A simple way for a server to push live updates to a web page</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

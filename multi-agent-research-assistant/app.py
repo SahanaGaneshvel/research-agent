@@ -14,7 +14,7 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 
-from config import get_settings
+from config import PROJECT_ROOT, get_settings
 from orchestration.state import AGENTS
 from orchestration.workflow import run_workflow, save_run
 from schemas.evaluation import MEMORY_ESTIMATE_BASIS
@@ -30,27 +30,40 @@ AGENT_INFO = {
     "evaluation": ("Evaluation Agent", "Verifies reported benchmarks · assesses on-prem suitability"),
     "report": ("Report Agent", "Consolidates everything into a cited 10-section report"),
 }
+# Status colours: brand Primary Blue for "running", Navy-adjacent greys for idle states, and the
+# brand guidelines' success / error colours (emerald 600 / red 700) for finished states.
 STATUS_STYLE = {
-    "pending": ("Pending", "#6b7280"),
-    "running": ("Running", "#2563eb"),
-    "completed": ("Completed", "#16a34a"),
-    "failed": ("Failed", "#dc2626"),
-    "skipped": ("Skipped", "#9ca3af"),
+    "pending": ("Pending", "#605C5C"),
+    "running": ("Running", "#1F5BF0"),
+    "completed": ("Completed", "#059669"),
+    "failed": ("Failed", "#B91C1C"),
+    "skipped": ("Skipped", "#94A3B8"),
 }
+BRAND = PROJECT_ROOT / "assets" / "brand"
 
-st.set_page_config(page_title="Multi-Agent AI Research Assistant", page_icon="🔎", layout="wide")
+st.set_page_config(
+    page_title="Research Agents · GenAI Protos", page_icon=str(BRAND / "genai-protos-icon.png"), layout="wide",
+)
+st.logo(str(BRAND / "genai-protos-logo.png"), size="large")
 st.markdown(
     """
 <style>
-  .block-container {padding-top: 2rem; max-width: 1300px;}
+  .block-container {padding-top: 2.5rem; max-width: 1280px;}
+  h1 {font-weight: 700 !important; letter-spacing: -0.01em;}
+  .eyebrow {font-size:0.8rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;
+            color:#1F5BF0; margin-bottom:-0.6rem;}
   .pill {display:inline-block; padding:2px 10px; border-radius:999px; font-size:0.78rem;
          font-weight:600; border:1px solid currentColor;}
-  .agent-title {font-weight:600; font-size:1rem; margin-bottom:2px;}
-  .agent-desc {font-size:0.8rem; opacity:0.7; min-height:2.4em;}
-  .agent-detail {font-size:0.78rem; opacity:0.85; margin-top:6px; min-height:2.4em;
+  .agent-title {font-weight:700; font-size:1rem; margin-bottom:2px; color:#2B2828;}
+  .agent-desc {font-size:0.82rem; color:#605C5C; min-height:2.4em;}
+  .agent-detail {font-size:0.78rem; color:#605C5C; margin-top:6px; min-height:2.4em;
                  overflow:hidden; text-overflow:ellipsis;}
-  .model-chip {font-family:monospace; padding:2px 8px; border-radius:6px;
-               background:rgba(127,127,127,0.15);}
+  .model-chip {font-family:monospace; padding:2px 8px; border-radius:2px;
+               background:#E0ECFF; color:#1F5BF0;}
+  .status-dot {display:inline-block; width:8px; height:8px; border-radius:999px; margin-right:6px;}
+  .brand-footer {margin-top:3rem; padding:1.5rem 0 0.5rem; border-top:1px solid #E2E8F0;
+                 font-size:0.85rem; color:#605C5C;}
+  [data-testid="stMetricValue"] {font-weight:700;}
 </style>
 """,
     unsafe_allow_html=True,
@@ -86,17 +99,28 @@ def link_df(rows: list[dict]) -> None:
     )
 
 
+def brand_footer() -> None:
+    st.markdown(
+        '<div class="brand-footer"><b>GenAI Protos</b> · Research Agents proof of concept · '
+        "Get started with AI. Experiment fast. Invest with clarity.</div>",
+        unsafe_allow_html=True,
+    )
+
+
 # ------------------------------------------------------------------ header
 settings = get_settings()
+st.markdown('<p class="eyebrow">GenAI Protos · Proof of concept</p>', unsafe_allow_html=True)
 st.title("Multi-Agent AI Research Assistant")
 st.caption(
     "Four specialised agents (Research, Comparison, Evaluation and Report) collaborate through a "
     "LangGraph workflow to produce a cited technical report. All inference runs locally via Ollama."
 )
 healthy, health_msg = ollama_health(settings.ollama_model)
+dot = "#1F5BF0" if healthy else "#B91C1C"
 st.markdown(
     f'Local model: <span class="model-chip">{html.escape(settings.ollama_model)}</span> &nbsp; '
-    + ("🟢 Ollama ready" if healthy else "🔴 Ollama not ready"),
+    f'<span class="status-dot" style="background:{dot}"></span>'
+    + ("Ollama ready" if healthy else "Ollama not ready"),
     unsafe_allow_html=True,
 )
 if not healthy:
@@ -158,10 +182,12 @@ if start:
 # ------------------------------------------------------------------ results
 if not result:
     st.info("Enter a topic and press **Start Research**. Results will appear here.")
+    brand_footer()
     st.stop()
 
 if result.get("abort_reason"):
     st.error(f"Research could not start: {result['abort_reason']}")
+    brand_footer()
     st.stop()
 
 sources = result.get("sources", [])
@@ -282,3 +308,5 @@ with tab4:
 
 if result.get("saved"):
     st.caption(f"Saved to: {result['saved'].get('markdown', '')}  ·  {result['saved'].get('json', '')}")
+
+brand_footer()

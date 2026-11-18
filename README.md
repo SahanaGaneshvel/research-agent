@@ -1,7 +1,10 @@
 # Multi-Agent AI Research Assistant
 
 **[▶ Live demo](https://research-agents-blush.vercel.app/)** (replays a real run, step by step) ·
-**[→ Full documentation](multi-agent-research-assistant/README.md)**
+**[→ Full documentation](multi-agent-research-assistant/README.md)** ·
+**[POC document (PDF)](multi-agent-research-assistant/docs/poc-document/POC_Document.pdf)**
+
+A GenAI Protos proof of concept.
 
 Ask it something like:
 
@@ -12,8 +15,8 @@ Four agents get to work. Eighteen minutes later, on a laptop with no GPU and no 
 have a 10-section research report with sources. Every link in it was actually opened, and no benchmark
 score appears in it unless the source really says it.
 
-[![The live demo after the example run finished](multi-agent-research-assistant/docs/images/demo-flow.png)](https://research-agents-blush.vercel.app/)
-<sub>The live demo at the end of the example run. On the site you can click any box to see what that step found.</sub>
+[![A run in progress on the live demo](multi-agent-research-assistant/docs/images/demo-flow.png)](https://research-agents-blush.vercel.app/)
+<sub>A run in progress on the live demo: Research is reading source 6 of 8 while the local model works. On the site you can click any box to see what that step found.</sub>
 
 ## What happens when you press Start
 
@@ -82,6 +85,7 @@ along with the flaws still in the example report, which I left in on purpose.
 | | |
 |---|---|
 | Live demo | [research-agents-blush.vercel.app](https://research-agents-blush.vercel.app/) |
+| POC document (team template, screenshots, model documentation) | [`docs/poc-document/POC_Document.pdf`](multi-agent-research-assistant/docs/poc-document/POC_Document.pdf) |
 | Example report (real run, unedited) | [`outputs/example_report.md`](multi-agent-research-assistant/outputs/example_report.md) |
 | Original brief | [`docs/PROJECT_BRIEF.md`](multi-agent-research-assistant/docs/PROJECT_BRIEF.md) |
 | Architecture | [README, section 2](multi-agent-research-assistant/README.md#2-architecture) |

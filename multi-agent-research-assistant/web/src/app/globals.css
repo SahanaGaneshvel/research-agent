@@ -1,49 +1,71 @@
 @import "tailwindcss";
 
-/* Minimal palette: paper, ink, one accent. The accent marks only "happening now" and links. */
+/* GenAI Protos brand palette (brand guidelines, section 2). */
 :root {
-  --paper: #f7f5f0;
-  --card: #fffdf9;
-  --ink: #1d1c1a;
-  --ink-2: #4a4843;
-  --muted: #706d66; /* 4.7:1 on paper, passes WCAG AA for small text */
-  --line: #e6e2d9;
-  --accent: #b4532a;
+  --primary: #1f5bf0; /* Primary Blue: buttons, links, active states, focus rings */
+  --ink: #2b2828; /* Charcoal: main text, logo wordmark */
+  --navy: #0b1b29; /* Navy: footer, dark bands, finished steps */
+  --page: #f7faff; /* page background */
+  --card: #ffffff; /* cards, navbar, panels */
+  --muted: #605c5c; /* secondary text (6.4:1 on the page background) */
+  --secondary: #d9e6ff; /* secondary button fill (text in Primary Blue) */
+  --soft: #e0ecff; /* light fill, hover on outline buttons */
+  --accent-soft: #d4e3ff; /* light blue highlight */
+  --border-blue: #c7daff; /* default border, form inputs */
+  --line: #e2e8f0; /* slate 200: card borders */
+  --line-soft: #f1f5f9; /* slate 100: dividers inside cards */
+  --field: #f8fafc; /* slate 50: input and tag fills */
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-card: var(--card);
+  --color-primary: var(--primary);
   --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
+  --color-navy: var(--navy);
+  --color-page: var(--page);
+  --color-card: var(--card);
   --color-muted: var(--muted);
+  --color-secondary: var(--secondary);
+  --color-soft: var(--soft);
+  --color-accent-soft: var(--accent-soft);
+  --color-border-blue: var(--border-blue);
   --color-line: var(--line);
-  --color-accent: var(--accent);
-  --font-serif: var(--font-newsreader);
-  --font-sans: var(--font-plex-sans);
-  --font-mono: var(--font-plex-mono);
+  --color-line-soft: var(--line-soft);
+  --color-field: var(--field);
+  --font-sans: var(--font-google-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* the brand theme keeps corners nearly square */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
 }
 
 html {
-  background: var(--paper);
+  background: var(--page);
   color-scheme: light;
 }
 
 body {
-  background: var(--paper);
+  background: var(--page);
   color: var(--ink);
-  font-family: var(--font-plex-sans), system-ui, sans-serif;
-  font-feature-settings: "ss01", "ss02";
+  font-family: var(--font-google-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   /* long queries, titles and URLs must wrap on phones instead of widening the page */
   overflow-wrap: anywhere;
 }
 
 ::selection {
-  background: #f1d9cc;
+  background: var(--accent-soft);
 }
 
 a {
   text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* diagram boxes: visible focus for keyboard users (CSS overrides the SVG stroke attribute) */
@@ -51,8 +73,22 @@ a {
   outline: none;
 }
 .flow-node:focus-visible .node-box {
-  stroke: var(--ink);
-  stroke-width: 2.4px;
+  stroke: var(--primary);
+  stroke-width: 2.5px;
+}
+
+/* soft brand backdrop behind the hero (guidelines: light blue → white → light blue) */
+.hero-backdrop {
+  background:
+    radial-gradient(40rem 18rem at 85% 0%, rgb(31 91 240 / 0.08), transparent 70%),
+    radial-gradient(30rem 16rem at 5% 30%, rgb(96 165 250 / 0.1), transparent 70%),
+    linear-gradient(180deg, #eef3fe 0%, #ffffff 55%, var(--page) 100%);
+}
+
+/* thin accent line: transparent → Primary Blue → transparent */
+.accent-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
 }
 
 /* gentle entrance for changing text; content stays visible without JavaScript timing */
@@ -69,25 +105,28 @@ a {
 
 /* the final report */
 .report {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink);
 }
-.report h1 { font-family: var(--font-newsreader); font-size: 1.75rem; font-weight: 500; color: var(--ink); margin: 0 0 0.75rem; }
+.report h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); margin: 0 0 0.75rem; }
 .report h2 {
-  font-family: var(--font-newsreader); font-size: 1.3rem; font-weight: 500; color: var(--ink);
-  margin: 2rem 0 0.5rem;
+  font-size: 1.3rem; font-weight: 700; color: var(--ink);
+  margin: 2rem 0 0.5rem; padding-top: 1rem; border-top: 1px solid var(--line-soft);
 }
-.report p { margin: 0.55rem 0; }
+.report h3 { font-size: 1.05rem; font-weight: 600; margin: 1.2rem 0 0.4rem; }
+.report p { margin: 0.55rem 0; color: #3d3a3a; }
 .report ul { list-style: disc; margin: 0.4rem 0 0.7rem 1.2rem; }
 .report ol { list-style: decimal; margin: 0.4rem 0 0.7rem 1.2rem; }
-.report li { margin: 0.2rem 0; }
+.report li { margin: 0.2rem 0; color: #3d3a3a; }
 .report strong { color: var(--ink); font-weight: 600; }
 .report em { color: var(--muted); }
-.report a { color: var(--accent); text-decoration: underline; word-break: break-all; }
-.report code { font-family: var(--font-plex-mono); font-size: 0.85em; }
-.report blockquote { border-left: 2px solid var(--line); padding-left: 1rem; color: var(--muted); margin: 0.75rem 0; }
-.report table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 0.75rem 0; display: block; overflow-x: auto; }
-.report th { text-align: left; font-weight: 600; color: var(--ink); border-bottom: 1px solid var(--ink); }
-.report th, .report td { padding: 0.4rem 0.6rem 0.4rem 0; vertical-align: top; }
+.report a { color: var(--primary); text-decoration: underline; word-break: break-all; }
+.report code { font-family: var(--font-mono); font-size: 0.85em; background: var(--field); padding: 0.05rem 0.3rem; }
+.report blockquote {
+  border-left: 3px solid var(--primary); background: #f7faff; padding: 0.5rem 1rem; color: var(--muted); margin: 0.75rem 0;
+}
+.report table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.75rem 0; display: block; overflow-x: auto; }
+.report th { text-align: left; font-weight: 600; color: var(--ink); background: var(--field); border-bottom: 1px solid var(--line); }
+.report th, .report td { padding: 0.5rem 0.75rem; vertical-align: top; }
 .report td { border-bottom: 1px solid var(--line); }

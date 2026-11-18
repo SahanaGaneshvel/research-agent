@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans, Newsreader } from "next/font/google";
+import { Google_Sans } from "next/font/google";
 import "./globals.css";
 
-const serif = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"] });
-const sans = IBM_Plex_Sans({ variable: "--font-plex-sans", subsets: ["latin"], weight: ["400", "500", "600"] });
-const mono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500"] });
+// Brand typeface (brand guidelines, section 3): Google Sans 400 / 500 / 600 / 700.
+const googleSans = Google_Sans({ variable: "--font-google-sans", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
-  title: "Research Agents: behind the scenes",
+  title: "Research Agents · GenAI Protos",
   description:
-    "Watch four AI agents research a question step by step: the searches they run, the sources they read, the facts they keep, and how every citation is checked.",
+    "A GenAI Protos proof of concept: four AI agents research a technical question on a local model and write a cited report, with plain code checking every fact.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable} antialiased`}>
+    <html lang="en" className={`${googleSans.variable} antialiased`}>
       <body className="min-h-screen">{children}</body>
     </html>
   );

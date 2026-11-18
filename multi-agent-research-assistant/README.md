@@ -11,6 +11,8 @@ All LLM inference runs **locally through Ollama**: no paid APIs, no API keys req
 | | |
 |---|---|
 | **Live demo** (replays the real run as a flow diagram, no install needed) | [research-agents-blush.vercel.app](https://research-agents-blush.vercel.app/) |
+| **POC document** (team template: approach, screenshots, test evidence, model documentation) | [`docs/poc-document/POC_Document.pdf`](docs/poc-document/POC_Document.pdf) · editable source [`POC_Document.html`](docs/poc-document/POC_Document.html) |
+| **Architecture diagram** (editable SVG) | [`docs/poc-document/architecture.svg`](docs/poc-document/architecture.svg) |
 | **Example report** (real run, unedited) | [`outputs/example_report.md`](outputs/example_report.md) |
 | **Full record of that run** (sources, findings, table, timings, every event) | [`outputs/example_run.json`](outputs/example_run.json) |
 | **Original brief** | [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.md) |
@@ -25,7 +27,8 @@ All LLM inference runs **locally through Ollama**: no paid APIs, no API keys req
 * **Local only**: Ollama with `qwen3.5:4b` by default (`qwen3.5:2b` on 8 GB laptops). No paid API, no API key.
 * **Built not to make things up**: the model cites sources only by ID (`[S3]`), code owns every URL, and
   benchmark numbers are kept only if they appear in the cited source ([section 3](#3-how-hallucinations-are-contained)).
-* **Two interfaces**: a Streamlit app, and a Next.js page that shows each step as it happens.
+* **Two interfaces**: a Streamlit app, and a Next.js page that shows each step as it happens. Both use the
+  GenAI Protos brand (logo, Google Sans, Primary Blue `#1F5BF0`, navy, near-square cards).
 * **Tested**: 139 offline tests (the model and network are mocked), plus 9 full live runs; every problem
   they exposed led to a fix and a regression test ([section 9](#what-live-testing-changed-9-full-runs)).
 * **Runs on a laptop CPU**: the example run took 18 minutes on a 4-core i5 with 8 GB RAM and no GPU.
@@ -101,7 +104,7 @@ flowchart TD
 | Step | Done by | Why |
 |---|---|---|
 | Choosing search queries, reading sources, filling table rows, writing prose | **LLM** | needs language understanding |
-| Calling tools, URLs, titles, dates, citation IDs | **Code** | must be exact; a 2–4B model is unreliable at tool calling |
+| Calling tools, URLs, titles, dates, citation IDs | **Code** | must be exact; a 2 to 4B model is unreliable at tool calling |
 | Picking the most informative passages of each page | **Code** (keyword + evidence-signal scoring) | page starts are menus and intros |
 | Which sources support each model row | **Code** (which findings mention the model) | the LLM never chooses its own citations |
 | Licence / parameter count from model cards | **Code** (Hugging Face & GitHub API metadata) | more reliable than LLM copying; origin labelled |
@@ -168,7 +171,7 @@ vision encoder (~0.9 GB) that Ollama loads even for text, so the 4B model needs 
 | Free RAM | Suggested `OLLAMA_MODEL` |
 |---|---|
 | ≥ 6 GB | `qwen3.5:4b` (default) |
-| 3–6 GB | `qwen3.5:2b` |
+| 3 to 6 GB | `qwen3.5:2b` |
 
 > On the 8 GB development laptop (Windows, VS Code and a browser open) `qwen3.5:4b` failed to load
 > with an out-of-memory error, so the example report was produced with `qwen3.5:2b`.
@@ -211,7 +214,7 @@ panel says in plain words what the current layer is doing. Click any box to see 
 and what it produced (the sources it found, the comparison table, the memory estimates, the report).
 
 * **Replay** (works anywhere, including the [deployed site](https://research-agents-blush.vercel.app/)): plays back a real recorded run
-  (`web/public/recorded-run.json`) with its real timings, sped up 10–100×.
+  (`web/public/recorded-run.json`) with its real timings, sped up 10 to 100×.
 * **Live** (only offered when the page runs on localhost and the API is up): streams a new run.
 
 Every agent reports structured progress events (`progress("…", step="read_done", facts=[…])`), and
@@ -315,6 +318,7 @@ Deviations from the suggested structure: `config.py` (single place for settings)
 | Malformed LLM output | one retry with the validation error; then a labelled fallback (search plan → keyword plan, extraction → snippet, report narrative → code-only sections) |
 | Invalid / missing citations | stripped and counted; citation audit shown in the UI |
 | Agent crash | status = Failed, error recorded, remaining agents continue where possible |
+| Ollama installed but its engine missing (`llama-server binary not found`, seen after an incomplete Ollama auto-update) | Start-up check still passes; every model call fails, so the run falls back step by step, marks Evaluation Failed and invents nothing. Fix: reinstall Ollama (`winget install --id Ollama.Ollama -e --force`); models are kept |
 
 ## 9. Example run
 
@@ -359,7 +363,7 @@ the mocks never could. Each fix below has a regression test named after the live
 | 1 | Model wrote queries like `[multimodal model] [on-premise]`; GitHub returned 0; arXiv matched "premise"; 0 findings yet a "normal" report | query cleaning, generic-word removal + bounded relaxation, "0 findings → insufficient-evidence report" |
 | 2 | Best articles dropped as irrelevant: the model saw only the page's menu/intro; model-card search returned GPT-2 | best-passage selection, HF Hub API sorted by trending, task guard for multimodal topics |
 | 3 | Empty comparison table from one big prompt | Comparison split into select → evidence → one row per model → differences |
-| 4–5 | Differences step failed silently; empty "no results" cached for 24 h; only Bing answered | warnings surfaced, never cache empty results, fixed engine fallback chain |
+| 4 to 5 | Differences step failed silently; empty "no results" cached for 24 h; only Bing answered | warnings surfaced, never cache empty results, fixed engine fallback chain |
 | 6 | "Kimi K3" inherited Kimi K3.1-Pro's 2.78T parameters | version-aware name matching |
 | 7 | Architecture components picked as "models"; a price in the licence column; prose misattributed a capability | own-card models always compared, licence sanity check, attribution check |
 | 8 | Attribution check removed a correct sentence ("PaliGemma VLM") | strict for versioned names, whole-word match for descriptive names |
@@ -384,19 +388,19 @@ Observed during live end-to-end runs with `qwen3.5:2b` on a CPU-only laptop:
   beyond the passages the model reads, so runs often report *"no benchmark scores could be verified"*.
   That is honest, but thin. Verification is lexical: it confirms the number and benchmark name appear in the
   source, not that they belong together.
-* **Shallow retrieval by design.** ~2–4 sources per category; no PDF parsing (arXiv abstracts only);
+* **Shallow retrieval by design.** ~2 to 4 sources per category; no PDF parsing (arXiv abstracts only);
   JavaScript-heavy pages yield little text.
 * **Licence classification is rule-based** and conservative; unusual names (e.g. Hugging Face's
   `other`) become "Unknown" rather than guessed.
 * **Memory estimates are arithmetic**, not measurements: weights only, no KV cache or vision encoder.
-* **CPU speed.** A Basic run takes ~10–18 minutes on a 4-core laptop CPU with the 2B model
+* **CPU speed.** A Basic run takes ~10 to 18 minutes on a 4-core laptop CPU with the 2B model
   (the example run: 1,073 s), most of it spent reading sources.
 * **Dates** are publication dates for arXiv, creation dates for Hugging Face, last-push dates for
   GitHub and page metadata for websites (often missing).
 
 ## 11. Possible improvements
 
-* Use a larger local model (4B–8B) on a machine with more RAM or a GPU. The pipeline is unchanged and
+* Use a larger local model (4B to 8B) on a machine with more RAM or a GPU. The pipeline is unchanged and
   only `OLLAMA_MODEL` differs; quality of reasoning and narrative should improve markedly.
 * Run Comparison and Evaluation in parallel when a GPU / multiple model instances are available.
 * Embedding-based passage selection and claim-level verification of narrative sentences against source text.
