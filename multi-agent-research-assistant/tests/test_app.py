@@ -76,7 +76,7 @@ def test_full_results_render_after_a_run(monkeypatch):
     page = " ".join(m.value for m in at.markdown)
     assert page.count("Completed") == 4  # all four agent cards show the real final status
     assert "## 10. References" in page  # rendered report
-    assert any(d.proto.label.startswith("⬇️ Download report") for d in at.get("download_button"))
+    assert any(d.proto.label.startswith("Download report") for d in at.get("download_button"))
 
 
 def test_start_button_disabled_and_error_shown_when_ollama_down(monkeypatch):

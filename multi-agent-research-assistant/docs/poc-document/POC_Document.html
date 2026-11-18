@@ -273,6 +273,7 @@
     <h3>What changed in this release (branding and UI)</h3>
     <ul>
       <li>I updated both interfaces to the GenAI Protos brand guidelines: logo in the header, white logo on a navy footer, Google Sans, Primary Blue <code>#1F5BF0</code> for actions and active states, Charcoal text, light-blue page background, 2 px corners, flat white cards with thin borders, Lucide outline icons, and the brand favicon.</li>
+      <li>I restyled the Streamlit app to match the web page: a white navbar with the logo, a hero with the question in a card, a segmented Basic / Detailed switch, step cards that light up while they run, a live “What’s happening now” panel, a navy results band, cleaner tabs and the report shown as a document card. Streamlit’s own header and menu are hidden.</li>
       <li>I rebuilt the web page as a product page: a hero with the question card and a <strong>Basic / Detailed</strong> depth switch for live runs, a sticky replay bar, the flow diagram in a card, a step-details panel with a close button, a result card with citation numbers, and a “main idea” feature row.</li>
       <li>I kept the accessibility work from the earlier version: keyboard focus rings in Primary Blue, readable contrast, reduced-motion support, and a list layout of the flow on phones and tablets.</li>
     </ul>
@@ -330,18 +331,22 @@
     <h3 style="margin-top:0">Walkthrough: the Streamlit app</h3>
     <figure>
       <div class="crop" style="max-height:104mm"><img src="images/st-01-start.png" alt="Streamlit start page"></div>
-      <figcaption><b>Figure 9.</b> The branded Streamlit app: enter a question, pick Basic or Detailed, press Start Research. The four agent cards change from Pending to Running to Completed from real workflow events. Start is disabled when Ollama is not ready.</figcaption>
+      <figcaption><b>Figure 9.</b> The Streamlit app: the question card with the Basic / Detailed switch and the Start button. The header shows whether the local model is ready, and Start is disabled when it is not.</figcaption>
+    </figure>
+    <figure>
+      <div class="crop" style="max-height:90mm"><img src="images/st-02-running.png" alt="A run in progress in Streamlit"></div>
+      <figcaption><b>Figure 10.</b> A run in progress. The Research Agent’s card is lit up and shows what it is doing, and the activity panel lists every step with its time. The cards change state from real workflow events, not timers.</figcaption>
     </figure>
     <figure>
       <div class="crop" style="max-height:96mm"><img src="images/st-04-model-comparison.png" alt="Streamlit comparison tab"></div>
-      <figcaption><b>Figure 10.</b> Results of the recorded example run (10 November 2026): every agent completed, 8 sources, 4 models compared, 1,073 s in total. The Model Comparison tab is shown; the other tabs are Research Findings, Evaluation and Final Report.</figcaption>
+      <figcaption><b>Figure 11.</b> Results of the recorded example run (10 November 2026): 8 sources, 4 models compared, 1,073 s in total, in the navy results band. The Model Comparison tab is shown; the other tabs are Research Findings, Evaluation and Final Report.</figcaption>
     </figure>
   </section>
 
   <section class="s">
     <figure>
       <div class="crop" style="max-height:100mm"><img src="images/st-05-evaluation.png" alt="Streamlit evaluation tab"></div>
-      <figcaption><b>Figure 11.</b> The Evaluation tab: the disclaimer that no benchmarks were run by the app, verified scores (none could be verified in this run), on-premise suitability judged qualitatively, and memory estimates labelled as computed, not measured.</figcaption>
+      <figcaption><b>Figure 12.</b> The Evaluation tab: the disclaimer that no benchmarks were run by the app, verified scores (none could be verified in this run), on-premise suitability judged qualitatively, and memory estimates labelled as computed, not measured.</figcaption>
     </figure>
   </section>
 
@@ -512,7 +517,7 @@
   </g>
 </svg>
 
-      <figcaption><b>Figure 12.</b> Architecture. Editable source: <code>docs/poc-document/architecture.svg</code> (plain SVG; opens in any browser, Figma, Inkscape or draw.io). A PNG copy is in <code>docs/poc-document/images/</code>.</figcaption>
+      <figcaption><b>Figure 13.</b> Architecture. Editable source: <code>docs/poc-document/architecture.svg</code> (plain SVG; opens in any browser, Figma, Inkscape or draw.io). A PNG copy is in <code>docs/poc-document/images/</code>.</figcaption>
     </figure>
     <ul>
       <li><strong>Interfaces.</strong> The Streamlit app calls the workflow directly. The Next.js page talks to a FastAPI server, which runs the same workflow and streams each step as Server-Sent Events.</li>
@@ -604,7 +609,7 @@
       <li>One context-window cell says “Block-wise causal masking”: an architecture detail in the wrong column. Code rejects non-answers and prices, but not every misplaced fact.</li>
     </ul>
     <div class="callout warn">
-      <p><strong>A new failure I found on 18 November 2026 while preparing this document.</strong> An automatic Ollama update on 11 November removed Ollama’s inference engine and never put it back. Ollama still starts and lists the model, so the app’s start-up check passed, but every model call failed. The app did what it was designed to do. It used the fallback plan, marked Evaluation as Failed, showed the warnings and invented nothing. The run ended after 50 s with 0 models compared. Screenshot and details: Appendix D. The fix is to reinstall Ollama, and section 13 lists the code change I plan to make.</p>
+      <p><strong>A new failure I found on 18 November 2026 while preparing this document.</strong> An automatic Ollama update on 11 November removed Ollama’s inference engine and never put it back. Ollama still starts and lists the model, so the app’s start-up check passed, but every model call failed. The app did what it was designed to do. It used the fallback plan, marked Evaluation as Failed, showed the warnings and invented nothing. The run ended in under a minute with 0 models compared. Screenshot and details: Appendix D. The fix is to reinstall Ollama, and section 13 lists the code change I plan to make.</p>
     </div>
   </section>
 
@@ -838,7 +843,7 @@ python -m pytest</pre>
   </div>
   <figure>
     <div class="crop" style="max-height:140mm"><img src="images/fail-01-results.png" alt="Run with a broken Ollama runtime"></div>
-    <figcaption><b>Figure 13.</b> The same question, run on 18 November after Ollama’s automatic update had removed its inference engine. Web retrieval still found 8 real sources, but every model call failed. The search plan fell back to keywords, extraction fell back to the original snippets (labelled), Comparison found 0 models, Evaluation is marked <b>Failed</b>, and the warnings are shown. Total time 50 s, and nothing was invented.</figcaption>
+    <figcaption><b>Figure 14.</b> The same question, run on 18 November after Ollama’s automatic update had removed its inference engine. Web retrieval still found 8 real sources, but every model call failed. The search plan fell back to keywords, extraction fell back to the original snippets (labelled), Comparison found 0 models, Evaluation is marked <b>Failed</b>, and the warnings are shown. This repeat run took 26 s because the search results were cached from an earlier attempt, and nothing was invented.</figcaption>
   </figure>
   <p><strong>Root cause.</strong> Ollama’s upgrade log shows that the 11 November update ran the uninstaller, which deleted the <code>lib\ollama</code> folder containing the inference engine, but the new version was not fully installed. The server still starts and lists models, so the app’s start-up check passed.</p>
   <p><strong>What it shows.</strong> One broken dependency made the report weaker, not wrong, which is how I wanted failures to behave. It also showed a gap: the start-up check should run one tiny generation first. That is now the first item in my next steps.</p>
