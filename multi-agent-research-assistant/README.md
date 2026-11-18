@@ -6,7 +6,7 @@ All LLM inference runs **locally through Ollama**: no paid APIs, no API keys req
 
 > Example query: *"Research the latest open-source multimodal models suitable for on-premise
 > deployment. Compare their capabilities, benchmarks, hardware requirements, licensing and limitations."*
-> → see the generated example in [`outputs/example_report.md`](outputs/example_report.md).
+> The report it wrote is in [`outputs/example_report.md`](outputs/example_report.md).
 
 | | |
 |---|---|
@@ -21,12 +21,12 @@ All LLM inference runs **locally through Ollama**: no paid APIs, no API keys req
 | **Behind-the-scenes web page** | [`web/`](web/) (replays the real run as a live flow diagram) |
 | **Source code** | [github.com/SahanaGaneshvel/research-agent](https://github.com/SahanaGaneshvel/research-agent) |
 
-### At a glance
+### In short
 
 * **4 agents** (Research, Comparison, Evaluation, Report) in a **LangGraph** workflow with shared, typed state.
 * **4 kinds of sources**: web search, Hugging Face model cards, arXiv papers, GitHub repositories.
 * **Local only**: Ollama with `qwen3.5:4b` by default (`qwen3.5:2b` on 8 GB laptops). No paid API, no API key.
-* **Built not to make things up**: the model cites sources only by ID (`[S3]`), code owns every URL, and
+* **Checks against made-up facts**: the model cites sources only by ID (`[S3]`), code owns every URL, and
   benchmark numbers are kept only if they appear in the cited source ([section 3](#3-how-hallucinations-are-contained)).
 * **Two interfaces**: a Streamlit app, and a Next.js page that shows each step as it happens. Both use the
   GenAI Protos brand (logo, Google Sans, Primary Blue `#1F5BF0`, navy, near-square cards).

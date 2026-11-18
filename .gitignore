@@ -28,3 +28,8 @@ Thumbs.db
 # POC delivery package (shared as a zip, not part of the repo)
 /Research Agents/
 /Research Agents.zip
+
+# AI assistant files never belong in the repo
+**/CLAUDE.md
+**/AGENTS.md
+**/.claude/

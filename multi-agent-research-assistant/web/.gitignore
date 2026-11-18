@@ -42,3 +42,7 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Instructions for AI coding assistants that next dev generates; kept out of the repo
+AGENTS.md
+CLAUDE.md

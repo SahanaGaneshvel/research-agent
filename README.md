@@ -1,10 +1,8 @@
 # Multi-Agent AI Research Assistant
 
-**[▶ Live demo](https://research-agents-blush.vercel.app/)** (replays a real run, step by step) ·
-**[→ Full documentation](multi-agent-research-assistant/README.md)** ·
-**[POC document (PDF)](multi-agent-research-assistant/docs/poc-document/POC_Document.pdf)**
-
-A GenAI Protos proof of concept.
+A GenAI Protos proof of concept. You can [watch a recorded run](https://research-agents-blush.vercel.app/),
+read the [POC Report](<multi-agent-research-assistant/docs/poc-document/Research Agents - POC Report.docx>)
+or go straight to the [full documentation](multi-agent-research-assistant/README.md).
 
 Ask it something like:
 
